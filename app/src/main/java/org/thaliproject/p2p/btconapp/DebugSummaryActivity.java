@@ -1,7 +1,6 @@
 package org.thaliproject.p2p.btconapp;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 

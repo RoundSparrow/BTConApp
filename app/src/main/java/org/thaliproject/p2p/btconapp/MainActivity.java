@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -224,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         super.onPostCreate(savedInstanceState);
     }
 
-    
+
     public void ShowSummary(){
 
         if(mTestDataFile != null){
@@ -309,6 +308,8 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         }
     }
 
+    public String dataTestSizeWord = "megabyte";
+
     // The Handler that gets information back from the BluetoothChatService
     private final Handler mHandler = new Handler() {
         @Override
@@ -327,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                                 mTestDataFile.SetTimeNow(TestDataFile.TimeForState.GoBigtData);
                                 long timeval = mTestDataFile.timeBetween(TestDataFile.TimeForState.GoBigtData, TestDataFile.TimeForState.GotData);
 
-                                final String sayoutloud = "Send megabyte in : " + (timeval / 1000) + " seconds.";
+                                final String sayoutloud = "Send " + dataTestSizeWord + " in : " + (timeval / 1000) + " seconds.";
 
                                 // lets do saving after we got ack received
                                 //mTestDataFile.WriteDebugline("BigSender");
@@ -366,7 +367,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                                 mTestDataFile.SetTimeNow(TestDataFile.TimeForState.GoBigtData);
 
                                 long timeval = mTestDataFile.timeBetween(TestDataFile.TimeForState.GoBigtData, TestDataFile.TimeForState.GotData);
-                                final String sayoutloud = "Got megabyte in : " + (timeval / 1000) + " seconds.";
+                                final String sayoutloud = "Got " + dataTestSizeWord + " in : " + (timeval / 1000) + " seconds.";
 
                                 mTestDataFile.WriteDebugline("Receiver");
 
