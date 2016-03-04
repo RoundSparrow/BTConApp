@@ -2,12 +2,13 @@ package org.thaliproject.p2p.btconapp;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 /**
  * Created by juksilve on 2.4.2015.
  */
-public class DebugSummaryActivity extends ActionBarActivity {
+public class DebugSummaryActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

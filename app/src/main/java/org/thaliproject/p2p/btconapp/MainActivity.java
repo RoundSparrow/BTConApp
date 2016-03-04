@@ -5,15 +5,21 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -27,7 +33,7 @@ import java.util.Random;
 import java.util.UUID;
 
 
-public class MainActivity extends ActionBarActivity implements BTConnector.Callback, BTConnector.ConnectSelector {
+public class MainActivity extends AppCompatActivity implements BTConnector.Callback, BTConnector.ConnectSelector {
 
     final MainActivity that = this;
 
@@ -144,12 +150,16 @@ public class MainActivity extends ActionBarActivity implements BTConnector.Callb
         }
     };
 
+    private SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         startTime = System.currentTimeMillis();
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         conSettings = new BTConnectorSettings();
         conSettings.SERVICE_TYPE = serviceTypeIdentifier;
@@ -206,6 +216,36 @@ public class MainActivity extends ActionBarActivity implements BTConnector.Callb
             startActivity(intent);
         }
     }
+
+    MenuItem menuItem_action_force_screen_on;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        menuItem_action_force_screen_on = menu.findItem(R.id.action_force_screen_on);
+        menuItem_action_force_screen_on.setChecked(preferences.getBoolean("PREF_KEY_SCREEN_ON", false));
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.action_force_screen_on:
+                item.setChecked(! item.isChecked());
+                if (item.isChecked()) {
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                }
+                else {
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public void onDestroy() {

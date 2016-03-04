@@ -5,5 +5,7 @@
     <string name="data_summary">Data summary</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="action_force_screen_on">Force Screen On</string>
+    <string name="action_bluetooth_transfers_on">Bluetooth XFers</string>
 
 </resources>
