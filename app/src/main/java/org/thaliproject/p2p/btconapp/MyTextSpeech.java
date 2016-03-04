@@ -1,16 +1,20 @@
 // Copyright (c) Microsoft. All Rights Reserved. Licensed under the MIT License. See license.txt in the project root for further information.
 package org.thaliproject.p2p.btconapp;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 public class MyTextSpeech implements TextToSpeech.OnInitListener {
     private final TextToSpeech _tts;
-
+    private HashMap<String, String> params = new HashMap<String, String>();
 
     public MyTextSpeech(Context context) {
+        // start with full volume.
+        params.put(TextToSpeech.Engine.KEY_PARAM_VOLUME, "1.0");
         _tts = new TextToSpeech(context, this);
     }
 
@@ -36,7 +40,16 @@ public class MyTextSpeech implements TextToSpeech.OnInitListener {
             }
         }
     }
+
+    public void setVolumeLevel(String inVolumeLevel)
+    {
+        params.put(TextToSpeech.Engine.KEY_PARAM_VOLUME, inVolumeLevel);
+    }
+
+    /**  speak at a lower volume, for platform >= 13 */
+    @TargetApi(13)
     public void speak(final String text) {
-        _tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+
+        _tts.speak(text, TextToSpeech.QUEUE_FLUSH, params);
     }
 }

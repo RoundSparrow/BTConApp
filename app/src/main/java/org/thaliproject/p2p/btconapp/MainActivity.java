@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         conSettings.MY_NAME = Bt_NAME;
 
         mySpeech = new MyTextSpeech(this);
+
         mTestDataFile = new TestDataFile(this);
         mTestDataFile.StartNewFile();
 
@@ -209,6 +210,21 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         mBTConnector.Start();
     }
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        timeHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // ToDo: Settings / Shared Preferences slider
+                mySpeech.setVolumeLevel("0.5");
+                mySpeech.speak("Volume reduced");
+            }
+        }, 1500L);
+
+        super.onPostCreate(savedInstanceState);
+    }
+
+    
     public void ShowSummary(){
 
         if(mTestDataFile != null){
@@ -263,6 +279,8 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
         mTestDataFile.CloseFile();
         mTestDataFile = null;
+
+        mySpeech.stop();
     }
 
 
