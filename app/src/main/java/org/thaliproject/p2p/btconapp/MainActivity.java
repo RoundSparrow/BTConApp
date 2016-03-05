@@ -127,12 +127,12 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
             //if the receiving process has taken more than a minute, lets cancel it
             long receivingNow = (System.currentTimeMillis() - receivingTimeOutBaseTime);
-            if(receivingNow > 30000) {
+            if(receivingNow > appSettings.receiveTimeMaximum) {
                 if (mBTConnectedThread != null) {
                     mBTConnectedThread.Stop();
                     mBTConnectedThread = null;
                 }
-                print_line("CHAT", "WE got timeout on receiving data, lets Disconnect.");
+                print_line("CHAT", "We got timeout on receiving data, lets Disconnect.");
 
                 ConCancelCounter = ConCancelCounter + 1;
                 ((TextView) findViewById(R.id.cancelCount)).setText("" + ConCancelCounter);
@@ -187,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         mStatusChecker.run();
 
         //for demo & testing to keep lights on
+        // ToDo: honor the Menu checkbox
         final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
         this.mWakeLock.acquire();
@@ -305,14 +306,14 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
     private void sayItWithBigBuffer() {
         if (mBTConnectedThread != null) {
-            byte[] buffer = new byte[1048576]; //Megabyte buffer
+            byte[] buffer = new byte[ApplicationSettings.BUFFER_SIZE_XFER0]; //Megabyte buffer
             new Random().nextBytes(buffer);
             print_line("CHAT", "sayItWithBigBuffer");
             mBTConnectedThread.write(buffer);
         }
     }
 
-    public String dataTestSizeWord = "megabyte";
+
 
     // The Handler that gets information back from the BluetoothChatService
     private final Handler mHandler = new Handler() {
@@ -324,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                         timeCounter = 0;
                         wroteDataAmount = wroteDataAmount + msg.arg1;
                         ((TextView) findViewById(R.id.CountBox)).setText("" + wroteDataAmount);
-                        if (wroteDataAmount == 1048576) {
+                        if (wroteDataAmount == appSettings.BUFFER_SIZE_XFER0) {
                             if (mTestDataFile != null) {
                                 // lets do saving after we got ack received
                                 //sendMessageCounter = sendMessageCounter+ 1;
@@ -332,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                                 mTestDataFile.SetTimeNow(TestDataFile.TimeForState.GoBigtData);
                                 long timeval = mTestDataFile.timeBetween(TestDataFile.TimeForState.GoBigtData, TestDataFile.TimeForState.GotData);
 
-                                final String sayoutloud = "Send " + dataTestSizeWord + " in : " + (timeval / 1000) + " seconds.";
+                                final String sayoutloud = "Send " + appSettings.dataTestSizeWord + " in : " + (timeval / 1000) + " seconds.";
 
                                 // lets do saving after we got ack received
                                 //mTestDataFile.WriteDebugline("BigSender");
@@ -360,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                         ((TextView) findViewById(R.id.CountBox)).setText("" + gotDataAmount);
                         BigBufferReceivingTimeOut.cancel();
                         BigBufferReceivingTimeOut.start();
-                        if (gotDataAmount == 1048576) {
+                        if (gotDataAmount == appSettings.BUFFER_SIZE_XFER0) {
                             BigBufferReceivingTimeOut.cancel();
 
                             gotFirstMessage = false;
@@ -371,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                                 mTestDataFile.SetTimeNow(TestDataFile.TimeForState.GoBigtData);
 
                                 long timeval = mTestDataFile.timeBetween(TestDataFile.TimeForState.GoBigtData, TestDataFile.TimeForState.GotData);
-                                final String sayoutloud = "Got " + dataTestSizeWord + " in : " + (timeval / 1000) + " seconds.";
+                                final String sayoutloud = "Got " + appSettings.dataTestSizeWord + " in : " + (timeval / 1000) + " seconds.";
 
                                 mTestDataFile.WriteDebugline("Receiver");
 
