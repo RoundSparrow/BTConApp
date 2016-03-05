@@ -306,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
     private void sayItWithBigBuffer() {
         if (mBTConnectedThread != null) {
-            byte[] buffer = new byte[ApplicationSettings.BUFFER_SIZE_XFER0]; //Megabyte buffer
+            byte[] buffer = new byte[appSettings.BUFFER_SIZE_XFER0]; //Megabyte buffer
             new Random().nextBytes(buffer);
             print_line("CHAT", "sayItWithBigBuffer");
             mBTConnectedThread.write(buffer);
