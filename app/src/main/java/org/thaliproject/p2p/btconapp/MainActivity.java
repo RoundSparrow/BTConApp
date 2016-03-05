@@ -320,6 +320,9 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 }
                 return true;
+            case R.id.action_log_view:
+                startActivity(new Intent(this, LogViewActivity.class));
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

@@ -35,4 +35,10 @@
           app:actionViewClass="android.widget.Spinner"
         />
 
+    <item
+        android:id="@+id/action_log_view"
+        android:orderInCategory="60"
+        android:title="@string/action_log_view"
+        app:showAsAction="never"/>
+
 </menu>

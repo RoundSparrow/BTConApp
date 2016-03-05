@@ -9,5 +9,8 @@
     <string name="action_bluetooth_transfers_on">Bluetooth XFers</string>
     <string name="action_volume_spinner0">Volume</string>
     <string name="action_bluetooth_data_size_spinner0">XFer Amount</string>
+    <string name="title_activity_log_view">Log Viewer</string>
+    <string name="large_text">not used</string>
+    <string name="action_log_view">Log Viewer</string>
 
 </resources>
