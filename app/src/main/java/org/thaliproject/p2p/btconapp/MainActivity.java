@@ -294,8 +294,9 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
     private void SayAck(long gotBytes) {
         if (mBTConnectedThread != null) {
-            String message = "Got bytes:" + gotBytes;
+            String message = "Got bytes: " + gotBytes;
             print_line("CHAT", "SayAck: " + message);
+            Log.i("MainActivity", "I think the problem is we are doing a big write on Thread " + Thread.currentThread());
             mBTConnectedThread.write(message.getBytes());
         }
     }
