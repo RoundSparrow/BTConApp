@@ -4,12 +4,15 @@ import java.util.ArrayList;
 
 /**
  * Created by adminsag on 3/5/16.
- */
+ * @author Stephen A. Gutknecht
+ * Copyright 2016 Stephen A Gutknecht, All Rights Reserved.
+*/
 public class LogKeeper {
-	private static ArrayList<String> logHolder = new ArrayList<>();
 	private static boolean isEnabled = true;
+	private static ArrayList<String> logHolder = new ArrayList<>();
 	private static long timeRefWhen = System.currentTimeMillis();
-	private static final int MAXIMUM_LOG_SIZE = 250;
+	private static final int MAXIMUM_LOG_SIZE = 300;
+	private static int logEntriesRemovedCount = 0;
 
 	public static void addLogEntry(String who, String content, int levelA, int levelB) {
 		if (! isEnabled)
@@ -22,7 +25,17 @@ public class LogKeeper {
 			if (logHolder.size() > MAXIMUM_LOG_SIZE)
 			{
 				logHolder.remove(0);
+				logEntriesRemovedCount++;
 			}
 		}
+	}
+
+	public static int getLogEntriesRemovedCount()
+	{
+		return logEntriesRemovedCount;
+	}
+
+	public static ArrayList<String> getLog() {
+		return logHolder;
 	}
 }
