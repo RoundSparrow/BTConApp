@@ -317,28 +317,28 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         {
             case 0:
                 appSettings.BUFFER_SIZE_XFER0 = 1024 * 512;
-                appSettings.receiveTimeMaximum = 15000L;
+                appSettings.receiveTimeMaximum = 20L * 1000L;
                 appSettings.dataTestSizeWord = "half megabyte";
                 break;
             case 1:
                 appSettings.BUFFER_SIZE_XFER0 = 1024 * 512 * 2;
-                appSettings.receiveTimeMaximum = 25000L;
+                appSettings.receiveTimeMaximum = 35L * 1000L;
                 appSettings.dataTestSizeWord = "megabyte";
                 break;
             case 2:
                 appSettings.BUFFER_SIZE_XFER0 = 1024 * 512 * 4;
-                appSettings.receiveTimeMaximum = 45000L;
+                appSettings.receiveTimeMaximum = 55L * 1000L;
                 appSettings.dataTestSizeWord = "two megabytes";
                 break;
             case 3:
                 appSettings.BUFFER_SIZE_XFER0 = 1024 * 512 * 8;
-                appSettings.receiveTimeMaximum = 90000L;
+                appSettings.receiveTimeMaximum = 100L * 1000L;
                 appSettings.dataTestSizeWord = "four megabytes";
                 break;
             case 4:
                 appSettings.BUFFER_SIZE_XFER0 = 1024 * 512 * 16;
-                appSettings.receiveTimeMaximum = 120000L;
-                appSettings.dataTestSizeWord = "eight megabyte";
+                appSettings.receiveTimeMaximum = 140L * 1000L;
+                appSettings.dataTestSizeWord = "eight megabytes";
                 break;
         }
         Log.d("MainActivity", "Bluetooth data transfer set to bytes: " + appSettings.BUFFER_SIZE_XFER0 + " timeout: " + appSettings.receiveTimeMaximum);
