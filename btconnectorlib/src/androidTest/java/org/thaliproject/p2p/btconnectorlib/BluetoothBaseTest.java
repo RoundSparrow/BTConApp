@@ -31,7 +31,7 @@ public class BluetoothBaseTest extends InstrumentationTestCase {
 
         super.tearDown();
         if(wBase != null) {
-            wBase.Stop();
+            wBase.stop();
             wBase = null;
         }
     }
@@ -67,14 +67,14 @@ public class BluetoothBaseTest extends InstrumentationTestCase {
 
         assertNotNull(wBase);
 
-        boolean startOk = wBase.Start();
+        boolean startOk = wBase.start();
         assertTrue("This device does not support Bluetooth", startOk);
 
-        wBase.SetBluetoothEnabled(false);
+        wBase.setBluetoothEnabled(false);
         boolean await = btOffLatch.await(30, TimeUnit.SECONDS);
         assertTrue(await);
 
-        wBase.SetBluetoothEnabled(true);
+        wBase.setBluetoothEnabled(true);
         boolean awaitAgain = btOnLatch.await(30, TimeUnit.SECONDS);
         assertTrue(awaitAgain);
     }

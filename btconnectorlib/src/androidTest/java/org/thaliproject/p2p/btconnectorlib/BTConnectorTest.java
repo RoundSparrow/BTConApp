@@ -38,7 +38,7 @@ public class BTConnectorTest extends InstrumentationTestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
         if(btConnector != null) {
-            btConnector.Stop();
+            btConnector.stop();
             btConnector = null;
         }
     }
@@ -92,7 +92,7 @@ public class BTConnectorTest extends InstrumentationTestCase {
 
         assertNotNull(btConnector);
 
-        btConnector.Start();
+        btConnector.start();
         boolean await0 = waitZeroLatch.await(30, TimeUnit.SECONDS);
         assertTrue(await0);
 
@@ -106,7 +106,7 @@ public class BTConnectorTest extends InstrumentationTestCase {
         boolean await2 = waitTwoLatch.await(30, TimeUnit.SECONDS);
         assertTrue(await2);
 
-        btConnector.Stop();
+        btConnector.stop();
         assertEquals(currState,BTConnector.State.Idle);
 
         btConnector = null;
@@ -160,7 +160,7 @@ public class BTConnectorTest extends InstrumentationTestCase {
 
         assertNotNull(btConnector);
 
-        btConnector.Start();
+        btConnector.start();
         boolean await0 = waitZeroLatch.await(30, TimeUnit.SECONDS);
         assertTrue(await0);
 
@@ -174,7 +174,7 @@ public class BTConnectorTest extends InstrumentationTestCase {
         boolean await2 = waitTwoLatch.await(30, TimeUnit.SECONDS);
         assertTrue(await2);
 
-        btConnector.Stop();
+        btConnector.stop();
         assertEquals(currState,BTConnector.State.Idle);
 
         btConnector = null;

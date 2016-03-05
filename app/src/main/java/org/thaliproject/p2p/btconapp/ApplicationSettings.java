@@ -14,7 +14,7 @@ public class ApplicationSettings {
 	public long receiveTimeMaximum = 70000L;
 
 	/*
-	For End-to-End testing we can use timer here to Stop the process
+	For End-to-End testing we can use timer here to stopBluetooth the process
 	for example after 1 minute.
 	The value is determined by mExitWithDelay
 	*/

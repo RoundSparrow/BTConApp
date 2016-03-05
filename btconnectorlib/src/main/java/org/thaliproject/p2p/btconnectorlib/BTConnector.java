@@ -21,7 +21,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
 
     final BTConnector that = this;
 
-    public enum State{
+    public enum State {
         Idle,
         NotInitialized,
         WaitingStateChange,
@@ -38,12 +38,12 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
         return outputConnectingToDetail;
     }
 
-    public interface  Callback{
+    public interface Callback {
         void Connected(BluetoothSocket socket, boolean incoming);
         void StateChanged(State newState);
     }
 
-    public interface  ConnectSelector{
+    public interface ConnectSelector {
         ServiceItem SelectServiceToConnect(List<ServiceItem> available);
     }
 
@@ -97,15 +97,15 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
         }
     }
 
-    public void Start() {
+    public void start() {
         //initialize the system, and
         // make sure BT & Wifi are enabled before we start running
         if(mBluetoothBase != null){
-            mBluetoothBase.Stop();
+            mBluetoothBase.stop();
             mBluetoothBase = null;
         }
         mBluetoothBase = new BluetoothBase(this.context, this);
-        Boolean btOk = mBluetoothBase.Start();
+        Boolean btOk = mBluetoothBase.start();
 
         if(mWifiBase != null){
             mWifiBase.Stop();
@@ -126,7 +126,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
         }
     }
 
-    public void Stop() {
+    public void stop() {
         stopAll();
         if (mWifiBase != null) {
             mWifiBase.Stop();
@@ -134,7 +134,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
         }
 
         if (mBluetoothBase != null) {
-            mBluetoothBase.Stop();
+            mBluetoothBase.stop();
             mBluetoothBase = null;
         }
     }
@@ -146,7 +146,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
         if (myBluetoothMACAddress.equals("02:00:00:00:00:00"))
         {
             // Workaround, expect this to fail on Android N, but works on Android M
-            // refereence: http://stackoverflow.com/questions/33377982/get-bluetooth-local-mac-address-in-marshmallow
+            // reference: http://stackoverflow.com/questions/33377982/get-bluetooth-local-mac-address-in-marshmallow
             myBluetoothMACAddress =  android.provider.Settings.Secure.getString(context.getContentResolver(), "bluetooth_address");
         }
         Log.i("BTConnector", "I am sending my Bluetooth MAC Address as: " + myBluetoothMACAddress);
@@ -184,10 +184,10 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
     }
 
     private  void stopServices() {
-        print_line("", "Stoppingservices");
+        print_line("", "StoppingServices");
         setState(State.Idle);
         if (mWifiAccessPoint != null) {
-            mWifiAccessPoint.Stop();
+            mWifiAccessPoint.stop();
             mWifiAccessPoint = null;
         }
 
@@ -211,21 +211,21 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
         }
     }
 
-    private  void stopBluetooth() {
-        print_line("", "Stop Bluetooth");
+    private void stopBluetooth() {
+        print_line("", "stopBluetooth");
 
         if(mBTHandShaker != null){
-            mBTHandShaker.Stop();
+            mBTHandShaker.stopBluetooth();
             mBTHandShaker = null;
         }
 
         if (mBTListenerThread != null) {
-            mBTListenerThread.Stop();
+            mBTListenerThread.stopBluetooth();
             mBTListenerThread = null;
         }
 
         if (mBTConnectToThread != null) {
-            mBTConnectToThread.Stop();
+            mBTConnectToThread.stopBluetooth();
             mBTConnectToThread = null;
         }
     }
@@ -257,7 +257,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
                 @Override
                 public void run() {
                     mBTHandShaker = new BTHandShaker(tmp, that, true);
-                    mBTHandShaker.Start();
+                    mBTHandShaker.startHandshake();
                 }
             });
         }
@@ -273,7 +273,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
                 @Override
                 public void run() {
                     mBTHandShaker = new BTHandShaker(tmp, that, false);
-                    mBTHandShaker.Start();
+                    mBTHandShaker.startHandshake();
                 }
             });
         }
@@ -286,9 +286,8 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
 
         print_line("HS", "HandShakeOk for incoming = " + incoming);
 
-
         if(mBTHandShaker != null) {
-            mBTHandShaker.Stop();
+            mBTHandShaker.stopBluetooth();
             mBTHandShaker = null;
         }
 
@@ -317,7 +316,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
         //only care if we have not stoppeed & nulled the instance
         if(mBTHandShaker != null) {
             mBTHandShaker.tryCloseSocket();
-            mBTHandShaker.Stop();
+            mBTHandShaker.stopBluetooth();
             mBTHandShaker = null;
 
             startServices();
@@ -335,7 +334,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
 
                 //only care if we have not stoppeed & nulled the instance
                 if (mBTConnectToThread != null) {
-                    mBTConnectToThread.Stop();
+                    mBTConnectToThread.stopBluetooth();
                     mBTConnectToThread = null;
 
                     startServices();
@@ -354,7 +353,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
 
                 //only care if we have not stoppeed & nulled the instance
                 if (mBTListenerThread != null) {
-                    mBTListenerThread.Stop();
+                    mBTListenerThread.stop();
                     mBTListenerThread = null;
 
                     startBluetooth();
@@ -380,7 +379,6 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
     }
 
 
-
     @Override
     public void WifiStateChanged(int state) {
         if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
@@ -390,7 +388,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
                 startAll();
             }
         } else {
-            //no wifi availavble, thus we need to stop doing anything;
+            //no wifi availavble, thus we need to stopBluetooth doing anything;
             print_line("WB", "Wifi is DISABLEd !!");
             stopAll();
             // indicate the waiting with state change
@@ -430,7 +428,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
             if (selItem != null && mBluetoothBase != null) {
 
                 if (mBTConnectToThread != null) {
-                    mBTConnectToThread.Stop();
+                    mBTConnectToThread.stopBluetooth();
                     mBTConnectToThread = null;
                 }
 

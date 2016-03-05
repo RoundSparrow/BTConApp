@@ -78,7 +78,7 @@ public class BTHandShakeSocketTread extends Thread {
         }
     }
 
-    public void CloseSocket() {
+    public void closeSocket() {
 
         if (mmInStream != null) {
             try {mmInStream.close();} catch (Exception e) {}

@@ -34,15 +34,15 @@ public class BTHandShaker {
         }
     };
 
-    public BTHandShaker(BluetoothSocket socket, BluetoothBase.BluetoothStatusChanged Callback, boolean incoming) {
+    public BTHandShaker(BluetoothSocket socket, BluetoothBase.BluetoothStatusChanged statusChangeCallback, boolean incoming) {
         print_line("Creating BTHandShaker");
-        callback = Callback;
+        callback = statusChangeCallback;
         mmSocket = socket;
         isIncoming = incoming;
     }
 
-    public void Start() {
-        print_line("Start");
+    public void startHandshake() {
+        print_line("start");
         HandShakeTimeOutTimer.start();
 
         mBTHandShakeSocketTread = new BTHandShakeSocketTread(mmSocket,mHandler);
@@ -55,12 +55,12 @@ public class BTHandShaker {
 
     public void tryCloseSocket() {
         if(mBTHandShakeSocketTread != null){
-            mBTHandShakeSocketTread.CloseSocket();
+            mBTHandShakeSocketTread.closeSocket();
         }
     }
 
-    public void Stop() {
-        print_line("Stop");
+    public void stopBluetooth() {
+        print_line("stopBluetooth");
         HandShakeTimeOutTimer.cancel();
         if(mBTHandShakeSocketTread != null){
             mBTHandShakeSocketTread = null;

@@ -36,6 +36,7 @@ public class BTListenerThread extends Thread {
         mSocket = tmp;
     }
 
+    @Override
     public void run() {
     //    while (!this.interrupted()) {
         if(callback != null) {
@@ -70,7 +71,7 @@ public class BTListenerThread extends Thread {
         Log.d(TAG,  "BTListenerThread: " + message);
     }
 
-    public void Stop() {
+    public void stopBluetooth() {
         printe_line("cancelled");
         mStopped = true;
         try {

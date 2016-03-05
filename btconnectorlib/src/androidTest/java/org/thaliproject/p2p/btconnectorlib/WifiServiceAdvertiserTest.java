@@ -62,7 +62,7 @@ public class WifiServiceAdvertiserTest extends InstrumentationTestCase {
         advert.Start("Humppaa");
         assertEquals(advert.GetLastError(),-1);
 
-        advert.Stop();
+        advert.stop();
         assertEquals(advert.GetLastError(),-1);
     }
 

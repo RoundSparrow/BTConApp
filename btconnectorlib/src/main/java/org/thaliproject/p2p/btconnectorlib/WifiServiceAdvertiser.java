@@ -46,7 +46,7 @@ public class WifiServiceAdvertiser {
         });
     }
 
-    public void Stop() {
+    public void stop() {
         p2p.clearLocalServices(channel, new WifiP2pManager.ActionListener() {
             public void onSuccess() {
                 lastError = -1;

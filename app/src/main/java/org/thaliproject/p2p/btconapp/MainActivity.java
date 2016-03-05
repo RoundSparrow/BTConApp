@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                     timeShow = timeShow + ", S: " + mExitWithDelay;
                 } else {
                     if(mBTConnector != null) {
-                        mBTConnector.Stop();
+                        mBTConnector.stopBluetooth();
                         mBTConnector = null;
                     }
                     mExitWithDelayIsOn = false;
@@ -183,12 +183,12 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                 appSettings.mExitWithDelayIsOn = false;
                 print_line("Debug","Exit with delay is set OFF");
                 if(mBTConnector != null){
-                    mBTConnector.Stop();
+                    mBTConnector.stop();
                     mBTConnector = null;
                     ShowSummary();
                 }else{
                     mBTConnector = new BTConnector(that,that,that,conSettings, appSettings.instanceEncryptionPWD);
-                    mBTConnector.Start();
+                    mBTConnector.start();
                 }
             }
         });
@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         }
         //create & start connector
         mBTConnector = new BTConnector(this,this,this,conSettings, appSettings.instanceEncryptionPWD);
-        mBTConnector.Start();
+        mBTConnector.start();
     }
 
     private Runnable speakVolumeChange = new Runnable() {
@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
         //delete connector
         if(mBTConnector != null) {
-            mBTConnector.Start();
+            mBTConnector.start();
             mBTConnector = null;
         }
 
@@ -473,7 +473,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                                 }
                                 //Re-start the loop
                                 if(mBTConnector != null) {
-                                    mBTConnector.Start();
+                                    mBTConnector.start();
                                 }
                             }
                         }, 1000);
@@ -503,7 +503,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                     print_line("CHAT", "WE are Disconnected now.");
                     //Re-start the loop
                     if(mBTConnector != null) {
-                        mBTConnector.Start();
+                        mBTConnector.start();
                     }
                 }
                 break;

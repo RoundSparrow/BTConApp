@@ -15,7 +15,7 @@ import android.util.Log;
  */
 public class BluetoothBase {
 
-    public interface  BluetoothStatusChanged{
+    public interface BluetoothStatusChanged{
         void Connected(BluetoothSocket socket);
         void GotConnection(BluetoothSocket socket);
         void ConnectionFailed(String reason);
@@ -28,25 +28,25 @@ public class BluetoothBase {
     private BluetoothStatusChanged callBack = null;
     private BluetoothAdapter bluetooth = null;
 
-    private BtBrowdCastReceiver receiver = null;
+    private BtBroadCastReceiver receiver = null;
     private final Context context;
 
-    public BluetoothBase(Context Context, BluetoothStatusChanged handler) {
-        this.context = Context;
-        this.callBack = handler;
+    public BluetoothBase(Context inContext, BluetoothStatusChanged callbackHandler) {
+        this.context = inContext;
+        this.callBack = callbackHandler;
 
         //bluetooth = new BluetoothAdapter(this);
         bluetooth = BluetoothAdapter.getDefaultAdapter();
     }
 
-    public boolean Start() {
+    public boolean start() {
 
         boolean ret = false;
         if(bluetooth != null) {
             ret = true;
-            Log.d("", "My BT: " + bluetooth.getAddress() + " : " + bluetooth.getName() + " , state: " + bluetooth.getState());
+            Log.d("BluetoothBase", "My BT: " + bluetooth.getAddress() + " name: " + bluetooth.getName() + " , state: " + bluetooth.getState());
 
-            receiver = new BtBrowdCastReceiver();
+            receiver = new BtBroadCastReceiver();
             IntentFilter filter = new IntentFilter();
             filter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
             this.context.registerReceiver(receiver, filter);
@@ -54,11 +54,11 @@ public class BluetoothBase {
         return ret;
     }
 
-    public void Stop() {
+    public void stop() {
         this.context.unregisterReceiver(receiver);
     }
 
-    public void SetBluetoothEnabled(boolean seton) {
+    public void setBluetoothEnabled(boolean seton) {
         if (bluetooth != null) {
             if (seton) {
                 bluetooth.enable();
@@ -80,6 +80,12 @@ public class BluetoothBase {
         String ret = "";
         if (bluetooth != null){
             ret = bluetooth.getAddress();
+            if (ret.equals("02:00:00:00:00:00"))
+            {
+                // Workaround, expect this to fail on Android N, but works on Android M
+                // reference: http://stackoverflow.com/questions/33377982/get-bluetooth-local-mac-address-in-marshmallow
+                ret =  android.provider.Settings.Secure.getString(context.getContentResolver(), "bluetooth_address");
+            }
         }
         return ret;
     }
@@ -100,7 +106,7 @@ public class BluetoothBase {
         return device;
     }
 
-    private class BtBrowdCastReceiver extends BroadcastReceiver {
+    private class BtBroadCastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();

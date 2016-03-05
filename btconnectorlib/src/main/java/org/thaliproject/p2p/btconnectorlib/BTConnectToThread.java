@@ -15,8 +15,8 @@ public class BTConnectToThread extends Thread {
     private final BluetoothBase.BluetoothStatusChanged callback;
     private final BluetoothSocket mSocket;
 
-    public BTConnectToThread(BluetoothBase.BluetoothStatusChanged Callback, BluetoothDevice device, BTConnectorSettings settings) {
-        callback = Callback;
+    public BTConnectToThread(BluetoothBase.BluetoothStatusChanged statusChangeCallback, BluetoothDevice device, BTConnectorSettings settings) {
+        callback = statusChangeCallback;
         BluetoothSocket tmp = null;
         try {
             tmp = device.createInsecureRfcommSocketToServiceRecord(settings.MY_UUID);
@@ -48,7 +48,7 @@ public class BTConnectToThread extends Thread {
      //   Log.d("BTConnectToThread",  "BTConnectToThread: " + message);
     }
 
-    public void Stop() {
+    public void stopBluetooth() {
         try {
             if(mSocket != null) {
                 mSocket.close();
