@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
     private ApplicationSettings appSettings = new ApplicationSettings();
 
     private TextView outputInfoText0;
+    private TextView transferCountBox;
 
     BTConnectorSettings conSettings;
     private final List<ServiceItem> connectedArray = new ArrayList<>();
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
     private final int mInterval = 1000; // 1 second by default, can be changed later
     private Handler timeHandler;
     private int timeCounter = 0;
+
     final Runnable mStatusChecker = new Runnable() {
         @Override
         public void run() {
@@ -119,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
     PowerManager.WakeLock mWakeLock = null;
 
     long receivingTimeOutBaseTime = 0;
+
     final CountDownTimer BigBufferReceivingTimeOut = new CountDownTimer(2000, 500) {
         public void onTick(long millisUntilFinished) {
             // not using
@@ -162,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
         outputInfoText0 = (TextView) findViewById(R.id.outputInfoText0);
         statusBox = ((TextView) findViewById(R.id.statusBox));
+        transferCountBox = ((TextView) findViewById(R.id.transferCountBox));
 
         mTestDataFile = new TestDataFile(this);
         mTestDataFile.StartNewFile();
@@ -327,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                     if (amIBigSender) {
                         timeCounter = 0;
                         wroteDataAmount = wroteDataAmount + msg.arg1;
-                        ((TextView) findViewById(R.id.CountBox)).setText("" + wroteDataAmount);
+                        transferCountBox.setText("" + wroteDataAmount);
                         if (wroteDataAmount == appSettings.BUFFER_SIZE_XFER0) {
                             if (mTestDataFile != null) {
                                 // lets do saving after we got ack received
@@ -361,14 +365,14 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                     if (!amIBigSender) {
                         gotDataAmount = gotDataAmount + msg.arg1;
                         timeCounter = 0;
-                        ((TextView) findViewById(R.id.CountBox)).setText("" + gotDataAmount);
+                        transferCountBox.setText("" + gotDataAmount);
                         BigBufferReceivingTimeOut.cancel();
                         BigBufferReceivingTimeOut.start();
                         if (gotDataAmount == appSettings.BUFFER_SIZE_XFER0) {
                             BigBufferReceivingTimeOut.cancel();
 
                             gotFirstMessage = false;
-                            gotMessageCounter = gotMessageCounter+ 1;
+                            gotMessageCounter = gotMessageCounter + 1;
                             ((TextView) findViewById(R.id.msgGotCount)).setText("" + gotMessageCounter);
 
                             if (mTestDataFile != null) {
