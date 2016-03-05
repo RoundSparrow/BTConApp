@@ -54,17 +54,17 @@ public class BTConnectedThread extends Thread {
 
     @Override
     public void run() {
-        Log.i(TAG, "BTConnectedThread started " + Thread.currentThread());
-        byte[] buffer = new byte[bufferSizeDesired];
+        Log.i(TAG, "BTConnectedThread run() started " + Thread.currentThread());
+        byte[] readBuffer = new byte[bufferSizeDesired];
         int bytesRead;
 
         while (true) {
             try {
                 if(mmInStream != null) {
-                    Log.d(TAG, "Starting write on Thread " + Thread.currentThread());
-                    bytesRead = mmInStream.read(buffer);
+                    Log.d(TAG, "Starting read on Thread " + Thread.currentThread());
+                    bytesRead = mmInStream.read(readBuffer);
                     //Log.d(TAG, "ConnectedThread read data: " + bytes + " bytes");
-                    callerHandler.obtainMessage(MESSAGE_READ, bytesRead, -1, buffer).sendToTarget();
+                    callerHandler.obtainMessage(MESSAGE_READ, bytesRead, -1, readBuffer).sendToTarget();
                 }
             } catch (IOException e) {
                 Log.e(TAG, "ConnectedThread disconnected: ", e);
@@ -85,15 +85,23 @@ public class BTConnectedThread extends Thread {
      * the buffer should be set by caller before this method is called
      */
     public void write() {
-        try {
-            if(mmOutStream != null) {
-                Log.d(TAG, "Starting write on Thread " + Thread.currentThread());
-                mmOutStream.write(buffer);
-                callerHandler.obtainMessage(MESSAGE_WRITE, buffer.length, -1, buffer).sendToTarget();
+        Thread writeThread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    if(mmOutStream != null) {
+                        Log.d(TAG, "Starting write on Thread " + Thread.currentThread());
+                        mmOutStream.write(buffer);
+                        callerHandler.obtainMessage(MESSAGE_WRITE, buffer.length, -1, buffer).sendToTarget();
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "ConnectedThread  write failed: ", e);
+                }
             }
-        } catch (IOException e) {
-            Log.e(TAG, "ConnectedThread  write failed: ", e);
-        }
+        };
+
+        writeThread.setName("BTConnectedThreadWriteThread");
+        writeThread.start();
     }
 
     public void Stop() {
