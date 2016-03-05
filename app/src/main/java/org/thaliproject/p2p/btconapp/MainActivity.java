@@ -160,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         mySpeech = new MyTextSpeech(this);
 
         outputInfoText0 = (TextView) findViewById(R.id.outputInfoText0);
+        statusBox = ((TextView) findViewById(R.id.statusBox));
 
         mTestDataFile = new TestDataFile(this);
         mTestDataFile.StartNewFile();
@@ -482,10 +483,12 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         // with this example we start it after we have done communications
     }
 
+    private TextView statusBox;
+
     @Override
     public void StateChanged(BTConnector.State newState) {
 
-        ((TextView) findViewById(R.id.statusBox)).setText("State : " + newState);
+        statusBox.setText("State: " + newState);
         switch(newState){
             case Idle:
                 ((TextView) findViewById(R.id.statusBox)).setBackgroundColor(0xff444444); //dark Gray
@@ -512,6 +515,8 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                     if (mTestDataFile != null) {
                         mTestDataFile.SetTimeNow(TestDataFile.TimeForState.Connecting);
                     }
+                    statusBox.append(" ");
+                    statusBox.append(mBTConnector.getOutputConnectingToDetail());
                 }
                 break;
             case Connected: {

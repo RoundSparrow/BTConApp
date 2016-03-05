@@ -31,6 +31,13 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
         Connected
     }
 
+    private String outputConnectingToDetail = "";
+
+    public String getOutputConnectingToDetail()
+    {
+        return outputConnectingToDetail;
+    }
+
     public interface  Callback{
         void Connected(BluetoothSocket socket, boolean incoming);
         void StateChanged(State newState);
@@ -437,6 +444,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
                 //we have connection, no need to find new ones
                 stopServices();
                 setState(State.Connecting);
+                outputConnectingToDetail =  device.getName() + " @ " + device.getAddress();
                 print_line("", "Connecting to " + device.getName() + ", at " + device.getAddress());
             } else {
                 // we'll get discovery stopped event soon enough
