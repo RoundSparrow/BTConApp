@@ -40,6 +40,10 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity implements BTConnector.Callback, BTConnector.ConnectSelector {
 
     private static final String PREF_KEY_VOLUMELEVEL = "volumeLevel";
+    // named the vars "Index" because the setting is an index to a lookup table (switch/case).
+    private static final String PREF_KEY_BLUETOOTH_DATA_SIZE_INDEX = "bluetoothDataSizeIndex";
+    private static final int    PREF_DEFAULT_BLUETOOTH_DATA_SIZE_INDEX = 1;
+    private static final int    PREF_DEFAULT_VOLUMELEVEL = 7;
 
     final MainActivity that = this;
 
@@ -173,6 +177,8 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         statusBox = ((TextView) findViewById(R.id.statusBox));
         transferCountBox = ((TextView) findViewById(R.id.transferCountBox));
 
+        setBluetoothDataSizeIndexTo(preferences.getInt(PREF_KEY_BLUETOOTH_DATA_SIZE_INDEX, PREF_DEFAULT_BLUETOOTH_DATA_SIZE_INDEX));
+
         mTestDataFile = new TestDataFile(this);
         mTestDataFile.StartNewFile();
 
@@ -197,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         mStatusChecker.run();
 
         //for demo & testing to keep lights on
-        // ToDo: honor the Menu checkbox
+        // ToDo: honor the Menu checkbox, which also uses the non-depreciated method of screen on
         final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         this.mWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
         this.mWakeLock.acquire();
@@ -221,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         public void run() {
             // ToDo: Settings / Shared Preferences slider
             if (mySpeech.isReady) {
-                setSpeechVolumeLevelTo(preferences.getInt(PREF_KEY_VOLUMELEVEL, 7));
+                setSpeechVolumeLevelTo(preferences.getInt(PREF_KEY_VOLUMELEVEL, PREF_DEFAULT_VOLUMELEVEL));
             }
             else
             {
@@ -270,7 +276,25 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
-        }); // set the listener, to perform actions based on item selection
+        });
+        actionVolumeSpinner0.setSelection(preferences.getInt(PREF_KEY_VOLUMELEVEL, PREF_DEFAULT_VOLUMELEVEL));
+
+        MenuItem actionBluetoothDataSizeItem0 = menu.findItem(R.id.action_bluetooth_data_size_spinner0);
+        Spinner actionBluetoothDataSizeSpinner0 = (Spinner) actionBluetoothDataSizeItem0.getActionView();
+        SpinnerAdapter spinnerBluetoothDataSizeAdapter = ArrayAdapter.createFromResource(getSupportActionBar().getThemedContext(), R.array.buffer_size, android.R.layout.simple_spinner_dropdown_item);
+        actionBluetoothDataSizeSpinner0.setAdapter(spinnerBluetoothDataSizeAdapter);
+        actionBluetoothDataSizeSpinner0.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                preferences.edit().putInt(PREF_KEY_BLUETOOTH_DATA_SIZE_INDEX, position).commit();
+                setBluetoothDataSizeIndexTo(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        actionBluetoothDataSizeSpinner0.setSelection(preferences.getInt(PREF_KEY_BLUETOOTH_DATA_SIZE_INDEX, PREF_DEFAULT_BLUETOOTH_DATA_SIZE_INDEX));
 
         return true;
     }
@@ -285,6 +309,39 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
             mySpeech.setVolumeLevel(positionToString);
             mySpeech.speak("Volume set");
         }
+    }
+
+    public void setBluetoothDataSizeIndexTo(int zeroToFour)
+    {
+        switch (zeroToFour)
+        {
+            case 0:
+                appSettings.BUFFER_SIZE_XFER0 = 1024 * 512;
+                appSettings.receiveTimeMaximum = 15000L;
+                appSettings.dataTestSizeWord = "half megabyte";
+                break;
+            case 1:
+                appSettings.BUFFER_SIZE_XFER0 = 1024 * 512 * 2;
+                appSettings.receiveTimeMaximum = 25000L;
+                appSettings.dataTestSizeWord = "megabyte";
+                break;
+            case 2:
+                appSettings.BUFFER_SIZE_XFER0 = 1024 * 512 * 4;
+                appSettings.receiveTimeMaximum = 45000L;
+                appSettings.dataTestSizeWord = "two megabytes";
+                break;
+            case 3:
+                appSettings.BUFFER_SIZE_XFER0 = 1024 * 512 * 8;
+                appSettings.receiveTimeMaximum = 90000L;
+                appSettings.dataTestSizeWord = "four megabytes";
+                break;
+            case 4:
+                appSettings.BUFFER_SIZE_XFER0 = 1024 * 512 * 16;
+                appSettings.receiveTimeMaximum = 120000L;
+                appSettings.dataTestSizeWord = "eight megabyte";
+                break;
+        }
+        Log.d("MainActivity", "Bluetooth data transfer set to bytes: " + appSettings.BUFFER_SIZE_XFER0 + " timeout: " + appSettings.receiveTimeMaximum);
     }
 
     @Override

@@ -28,4 +28,11 @@
           app:actionViewClass="android.widget.Spinner"
           />
 
+    <item android:id="@+id/action_bluetooth_data_size_spinner0"
+          android:orderInCategory="52"
+          android:title="@string/action_bluetooth_data_size_spinner0"
+          app:showAsAction="ifRoom|collapseActionView"
+          app:actionViewClass="android.widget.Spinner"
+        />
+
 </menu>

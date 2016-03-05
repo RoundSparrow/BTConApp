@@ -8,5 +8,6 @@
     <string name="action_force_screen_on">Force Screen On</string>
     <string name="action_bluetooth_transfers_on">Bluetooth XFers</string>
     <string name="action_volume_spinner0">Volume</string>
+    <string name="action_bluetooth_data_size_spinner0">XFer Amount</string>
 
 </resources>
