@@ -15,9 +15,9 @@ import java.io.OutputStream;
 
 public class BTConnectedThread extends Thread {
 
-    public static final int MESSAGE_READ         = 0x11;
-    public static final int MESSAGE_WRITE        = 0x22;
-    public static final int SOCKET_DISCONNEDTED  = 0x33;
+    public static final int MESSAGE_READ         = 1;
+    public static final int MESSAGE_WRITE        = 2;
+    public static final int SOCKET_DISCONNECTED  = 3;
 
     private BluetoothSocket mmSocket;
     private InputStream mmInStream;
@@ -25,6 +25,7 @@ public class BTConnectedThread extends Thread {
     private final Handler mHandler;
 
     final String TAG  = "BTConnectedThread";
+
 
     public BTConnectedThread(BluetoothSocket socket, Handler handler) {
         super("BTConnectedThread");
@@ -56,13 +57,14 @@ public class BTConnectedThread extends Thread {
         while (true) {
             try {
                 if(mmInStream != null) {
+                    Log.d(TAG, "Starting write on Thread " + Thread.currentThread());
                     bytes = mmInStream.read(buffer);
                     //Log.d(TAG, "ConnectedThread read data: " + bytes + " bytes");
                     mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                 }
             } catch (IOException e) {
                 Log.e(TAG, "ConnectedThread disconnected: ", e);
-                mHandler.obtainMessage(SOCKET_DISCONNEDTED, -1,-1 ,e ).sendToTarget();
+                mHandler.obtainMessage(SOCKET_DISCONNECTED, -1,-1 ,e ).sendToTarget();
                 break;
             }
         }
@@ -75,6 +77,7 @@ public class BTConnectedThread extends Thread {
     public void write(byte[] buffer) {
         try {
             if(mmOutStream != null) {
+                Log.d(TAG, "Starting write on Thread " + Thread.currentThread());
                 mmOutStream.write(buffer);
                 mHandler.obtainMessage(MESSAGE_WRITE, buffer.length, -1, buffer).sendToTarget();
             }

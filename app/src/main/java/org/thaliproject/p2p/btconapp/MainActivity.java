@@ -429,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                         }
                     }
                     break;
-                case BTConnectedThread.SOCKET_DISCONNEDTED: {
+                case BTConnectedThread.SOCKET_DISCONNECTED: {
 
                     ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xffcccccc); //light Gray
 

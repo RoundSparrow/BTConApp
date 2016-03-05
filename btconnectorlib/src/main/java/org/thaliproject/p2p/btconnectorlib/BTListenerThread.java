@@ -19,8 +19,12 @@ public class BTListenerThread extends Thread {
     private final BluetoothServerSocket mSocket;
     boolean mStopped = false;
 
-    public BTListenerThread(BluetoothBase.BluetoothStatusChanged Callback,BluetoothAdapter bta, BTConnectorSettings settings) {
-        callback = Callback;
+    final String TAG  = "BTListenerThread";
+
+
+    public BTListenerThread(BluetoothBase.BluetoothStatusChanged statusCallback, BluetoothAdapter bta, BTConnectorSettings settings) {
+        super("BTListenerThread");
+        callback = statusCallback;
         BluetoothServerSocket tmp = null;
 
         try {
@@ -35,6 +39,7 @@ public class BTListenerThread extends Thread {
     public void run() {
     //    while (!this.interrupted()) {
         if(callback != null) {
+            Log.d(TAG, "Starting to listen on Thread " + Thread.currentThread());
             printe_line("starting to listen");
             BluetoothSocket socket = null;
             try {
@@ -62,7 +67,7 @@ public class BTListenerThread extends Thread {
     }
 
     private void printe_line(String message){
-        Log.d("BTListerThread",  "BTListerThread: " + message);
+        Log.d(TAG,  "BTListenerThread: " + message);
     }
 
     public void Stop() {
