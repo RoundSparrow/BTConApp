@@ -220,7 +220,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
         }
 
         if (mBTListenerThread != null) {
-            mBTListenerThread.stopBluetooth();
+            mBTListenerThread.stopListening();
             mBTListenerThread = null;
         }
 
@@ -231,7 +231,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
     }
 
     private void stopAll() {
-        print_line("", "Stoping All");
+        print_line("", "Stopping All");
         ServiceFoundTimeOutTimer.cancel();
         stopServices();
         stopBluetooth();
@@ -353,7 +353,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
 
                 //only care if we have not stoppeed & nulled the instance
                 if (mBTListenerThread != null) {
-                    mBTListenerThread.stop();
+                    mBTListenerThread.stopListening();
                     mBTListenerThread = null;
 
                     startBluetooth();
@@ -388,7 +388,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
                 startAll();
             }
         } else {
-            //no wifi availavble, thus we need to stopBluetooth doing anything;
+            //no wifi availavble, thus we need to stopListening doing anything;
             print_line("WB", "Wifi is DISABLEd !!");
             stopAll();
             // indicate the waiting with state change
@@ -476,5 +476,6 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
 
     public void print_line(String who, String line) {
         Log.i("BTConnector " + who, line);
+        LogKeeper.addLogEntry(who, line, 0, 0);
     }
 }

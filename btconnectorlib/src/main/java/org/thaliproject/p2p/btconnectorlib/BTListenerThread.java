@@ -30,7 +30,6 @@ public class BTListenerThread extends Thread {
         try {
             tmp = bta.listenUsingInsecureRfcommWithServiceRecord(settings.MY_NAME, settings.MY_UUID);
         } catch (IOException e) {
-
             printe_line("listen() failed: " + e.toString());
         }
         mSocket = tmp;
@@ -69,9 +68,10 @@ public class BTListenerThread extends Thread {
 
     private void printe_line(String message){
         Log.d(TAG,  "BTListenerThread: " + message);
+        LogKeeper.addLogEntry(TAG, message, 0, 0);
     }
 
-    public void stopBluetooth() {
+    public void stopListening() {
         printe_line("cancelled");
         mStopped = true;
         try {

@@ -13,7 +13,7 @@ import java.io.OutputStream;
  * Created by juksilve on 11.3.2015.
  */
 
-public class BTHandShakeSocketTread extends Thread {
+public class BTHandShakeSocketThread extends Thread {
 
     public static final int MESSAGE_READ         = 1;
     public static final int MESSAGE_WRITE        = 2;
@@ -24,10 +24,10 @@ public class BTHandShakeSocketTread extends Thread {
     private OutputStream mmOutStream;
     private final Handler mHandler;
 
-    final String TAG  = "BTHandShakeSocketTread";
+    final String TAG  = "BTHandShakeSocketThread";
 
-    public BTHandShakeSocketTread(BluetoothSocket socket, Handler handler) {
-        Log.d(TAG, "Creating BTHandShakeSocketTread");
+    public BTHandShakeSocketThread(BluetoothSocket socket, Handler handler) {
+        Log.d(TAG, "Creating BTHandShakeSocketThread");
         mHandler = handler;
         mmSocket = socket;
 
@@ -48,7 +48,7 @@ public class BTHandShakeSocketTread extends Thread {
 
     @Override
     public void run() {
-        Log.i(TAG, "BTHandShakeSocketTread started");
+        Log.i(TAG, "BTHandShakeSocketThread started");
         byte[] buffer = new byte[100];
         int bytes;
 
@@ -57,10 +57,10 @@ public class BTHandShakeSocketTread extends Thread {
             //Log.d(TAG, "ConnectedThread read data: " + bytes + " bytes");
             mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
         } catch (IOException e) {
-            Log.e(TAG, "BTHandShakeSocketTread disconnected: ", e);
+            Log.e(TAG, "BTHandShakeSocketThread disconnected: ", e);
             mHandler.obtainMessage(SOCKET_DISCONNECTED, -1, -1, e).sendToTarget();
         }
-        Log.i(TAG, "BTHandShakeSocketTread fully stopped");
+        Log.i(TAG, "BTHandShakeSocketThread fully stopped");
     }
 
     /**
@@ -74,7 +74,7 @@ public class BTHandShakeSocketTread extends Thread {
                 mHandler.obtainMessage(MESSAGE_WRITE, buffer.length, -1, buffer).sendToTarget();
             }
         } catch (IOException e) {
-            Log.e(TAG, "BTHandShakeSocketTread  write failed: ", e);
+            Log.e(TAG, "BTHandShakeSocketThread  write failed: ", e);
         }
     }
 

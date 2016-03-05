@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                     timeShow = timeShow + ", S: " + mExitWithDelay;
                 } else {
                     if(mBTConnector != null) {
-                        mBTConnector.stopBluetooth();
+                        mBTConnector.stopListening();
                         mBTConnector = null;
                     }
                     mExitWithDelayIsOn = false;

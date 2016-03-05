@@ -20,7 +20,7 @@ public class BTHandShaker {
     final String handShakeBuf = "handshake";
     final String shakeBackBuf = "shakehand";
 
-    BTHandShakeSocketTread mBTHandShakeSocketTread = null;
+    BTHandShakeSocketThread mBTHandShakeSocketTread = null;
 
     final CountDownTimer HandShakeTimeOutTimer = new CountDownTimer(4000, 1000) {
         @Override
@@ -45,7 +45,7 @@ public class BTHandShaker {
         print_line("startAdvertising");
         HandShakeTimeOutTimer.start();
 
-        mBTHandShakeSocketTread = new BTHandShakeSocketTread(mmSocket,mHandler);
+        mBTHandShakeSocketTread = new BTHandShakeSocketThread(mmSocket,mHandler);
         mBTHandShakeSocketTread.start();
 
         if (!isIncoming) {
@@ -60,7 +60,7 @@ public class BTHandShaker {
     }
 
     public void stopBluetooth() {
-        print_line("stopBluetooth");
+        print_line("stopListening");
         HandShakeTimeOutTimer.cancel();
         if (mBTHandShakeSocketTread != null) {
             mBTHandShakeSocketTread = null;
@@ -77,14 +77,14 @@ public class BTHandShaker {
         public void handleMessage(Message msg) {
             if (mBTHandShakeSocketTread != null) {
                 switch (msg.what) {
-                    case BTHandShakeSocketTread.MESSAGE_WRITE: {
+                    case BTHandShakeSocketThread.MESSAGE_WRITE: {
                         print_line("MESSAGE_WRITE " + msg.arg1 + " bytes.");
                         if (isIncoming) {
                             callback.HandShakeOk(mmSocket, isIncoming);
                         }
                     }
                     break;
-                    case BTHandShakeSocketTread.MESSAGE_READ: {
+                    case BTHandShakeSocketThread.MESSAGE_READ: {
                         print_line("got MESSAGE_READ " + msg.arg1 + " bytes.");
                         if (isIncoming) {
                             mBTHandShakeSocketTread.write(shakeBackBuf.getBytes());
@@ -93,7 +93,7 @@ public class BTHandShaker {
                         }
                     }
                     break;
-                    case BTHandShakeSocketTread.SOCKET_DISCONNECTED: {
+                    case BTHandShakeSocketThread.SOCKET_DISCONNECTED: {
 
                         callback.HandShakeFailed("SOCKET_DISCONNECTED", isIncoming);
                     }

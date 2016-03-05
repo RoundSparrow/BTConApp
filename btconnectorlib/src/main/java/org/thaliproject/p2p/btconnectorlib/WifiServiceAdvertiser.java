@@ -66,7 +66,8 @@ public class WifiServiceAdvertiser {
         });
     }
 
-    private void debug_print(String buffer) {
-        Log.i("ACCESS point",buffer);
+    private void debug_print(String output) {
+        Log.i("ACCESS point", output);
+        LogKeeper.addLogEntry("WiFi_SA", output, 0, 0);
     }
 }

@@ -33,14 +33,14 @@ public class WifiBase implements WifiP2pManager.ChannelListener {
     final WifiStatusCallBack callback;
     MainBCReceiver mBRReceiver;
 
-    public WifiBase(Context Context, WifiStatusCallBack handler){
-        this.context = Context;
-        this.callback = handler;
+    public WifiBase(Context inContext, WifiStatusCallBack statusCallback){
+        this.context = inContext;
+        this.callback = statusCallback;
     }
 
-    public boolean start(){
+    public boolean start() {
 
-        boolean ret =false;
+        boolean ret = false;
 
         mBRReceiver = new MainBCReceiver();
         IntentFilter filter = new IntentFilter();
@@ -65,7 +65,7 @@ public class WifiBase implements WifiP2pManager.ChannelListener {
     public WifiP2pManager.Channel GetWifiChannel(){
         return channel;
     }
-    public WifiP2pManager  GetWifiP2pManager(){
+    public WifiP2pManager GetWifiP2pManager(){
         return p2p;
     }
 
@@ -89,7 +89,7 @@ public class WifiBase implements WifiP2pManager.ChannelListener {
 
         ServiceItem  ret = null;
 
-        if(connectedArray.size() > 0 && available.size() > 0) {
+        if (connectedArray.size() > 0 && available.size() > 0) {
 
             int firstNewMatch = -1;
             int firstOldMatch = -1;
@@ -100,7 +100,7 @@ public class WifiBase implements WifiP2pManager.ChannelListener {
                 }
                 for (int ii = 0; ii < connectedArray.size(); ii++) {
                     if (available.get(i).deviceAddress.equals(connectedArray.get(ii).deviceAddress)) {
-                        if(firstOldMatch < 0 || firstOldMatch > ii){
+                        if (firstOldMatch < 0 || firstOldMatch > ii){
                             //find oldest one available that we have connected previously
                             firstOldMatch = ii;
                         }
@@ -116,7 +116,7 @@ public class WifiBase implements WifiP2pManager.ChannelListener {
 
             if (firstNewMatch >= 0){
                 ret = available.get(firstNewMatch);
-            }else if(firstOldMatch >= 0){
+            } else if (firstOldMatch >= 0){
                 ret = connectedArray.get(firstOldMatch);
                 // we move this to last position
                 connectedArray.remove(firstOldMatch);
@@ -124,16 +124,17 @@ public class WifiBase implements WifiP2pManager.ChannelListener {
 
             //print_line("EEE", "firstNewMatch " + firstNewMatch + ", firstOldMatch: " + firstOldMatch);
 
-        }else if(available.size() > 0){
+        } else if (available.size() > 0) {
             ret = available.get(0);
         }
-        if(ret != null){
+
+        if (ret != null) {
             connectedArray.add(ret);
 
             // just to set upper limit for the amount of remembered contacts
             // when we have 101, we remove the oldest (that's the top one)
             // from the array
-            if(connectedArray.size() > 100){
+            if (connectedArray.size() > 100) {
                 connectedArray.remove(0);
             }
         }
@@ -141,8 +142,9 @@ public class WifiBase implements WifiP2pManager.ChannelListener {
         return ret;
     }
 
-    private void debug_print(String buffer) {
-        Log.i("Service searcher", buffer);
+    private void debug_print(String output) {
+        Log.i("Service searcher", output);
+        LogKeeper.addLogEntry("WiFiBase", output, 0, 0);
     }
 
     private class MainBCReceiver extends BroadcastReceiver {
@@ -151,7 +153,7 @@ public class WifiBase implements WifiP2pManager.ChannelListener {
             String action = intent.getAction();
             if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
                 int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
-                if(callback != null) {
+                if (callback != null) {
                     callback.WifiStateChanged(state);
                 }
             }
