@@ -315,12 +315,12 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
 
     // The Handler that gets information back from the BluetoothChatService
-    private final Handler mHandler = new Handler() {
+    private final Handler bluetoothChatReturnHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
     // ToDo: reviewing logcat, there seems a major flaw - this runs on Main thread for a long duration. the GUI becomes entirely unresponsive.
             long handlerStartWhen = System.currentTimeMillis();
-            android.util.Log.i("MAIN", "mHandler " + msg.what + " Thread " + Thread.currentThread());
+            android.util.Log.i("MAIN", "bluetoothChatReturnHandler " + msg.what + " Thread " + Thread.currentThread());
 
             switch (msg.what) {
                 case BTConnectedThread.MESSAGE_WRITE:
@@ -445,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                 }
                 break;
             }
-            android.util.Log.i("MAIN", "END mHandler " + msg.what + " Thread " + Thread.currentThread() + " elapsed: " + (System.currentTimeMillis() - handlerStartWhen));
+            android.util.Log.i("MAIN", "END bluetoothChatReturnHandler " + msg.what + " Thread " + Thread.currentThread() + " elapsed: " + (System.currentTimeMillis() - handlerStartWhen));
         }
     };
 
@@ -467,7 +467,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         wroteDataAmount = 0;
         gotDataAmount = 0;
 
-        mBTConnectedThread = new BTConnectedThread(socket, mHandler);
+        mBTConnectedThread = new BTConnectedThread(socket, bluetoothChatReturnHandler);
         mBTConnectedThread.start();
 
         if(!amIBigSender) {

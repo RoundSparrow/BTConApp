@@ -22,7 +22,7 @@ public class BTConnectedThread extends Thread {
     private BluetoothSocket mmSocket;
     private InputStream mmInStream;
     private OutputStream mmOutStream;
-    private final Handler mHandler;
+    private final Handler callerHandler;
 
     final String TAG  = "BTConnectedThread";
 
@@ -30,7 +30,7 @@ public class BTConnectedThread extends Thread {
     public BTConnectedThread(BluetoothSocket socket, Handler handler) {
         super("BTConnectedThread");
         Log.d(TAG, "Creating BTConnectedThread " + Thread.currentThread());
-        mHandler = handler;
+        callerHandler = handler;
         mmSocket = socket;
 
         InputStream tmpIn = null;
@@ -60,11 +60,11 @@ public class BTConnectedThread extends Thread {
                     Log.d(TAG, "Starting write on Thread " + Thread.currentThread());
                     bytes = mmInStream.read(buffer);
                     //Log.d(TAG, "ConnectedThread read data: " + bytes + " bytes");
-                    mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                    callerHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                 }
             } catch (IOException e) {
                 Log.e(TAG, "ConnectedThread disconnected: ", e);
-                mHandler.obtainMessage(SOCKET_DISCONNECTED, -1,-1 ,e ).sendToTarget();
+                callerHandler.obtainMessage(SOCKET_DISCONNECTED, -1, -1, e).sendToTarget();
                 break;
             }
         }
@@ -79,7 +79,7 @@ public class BTConnectedThread extends Thread {
             if(mmOutStream != null) {
                 Log.d(TAG, "Starting write on Thread " + Thread.currentThread());
                 mmOutStream.write(buffer);
-                mHandler.obtainMessage(MESSAGE_WRITE, buffer.length, -1, buffer).sendToTarget();
+                callerHandler.obtainMessage(MESSAGE_WRITE, buffer.length, -1, buffer).sendToTarget();
             }
         } catch (IOException e) {
             Log.e(TAG, "ConnectedThread  write failed: ", e);
