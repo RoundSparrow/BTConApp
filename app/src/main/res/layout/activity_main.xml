@@ -77,127 +77,151 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.0"/>
         </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:weightSum="1"
-            android:layout_marginBottom="10dp">
-            <TextView
-                android:id="@+id/CountBoxtitle"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.0"
-                android:text="Bytes: "/>
-            <TextView
-                android:id="@+id/CountBox"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_weight="1.0"/>
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:weightSum="1"
-            android:layout_marginBottom="10dp">
-            <TextView
-                android:id="@+id/msgGotCounttitle"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.0"
-                android:text="Messages got: "/>
-            <TextView
-                android:id="@+id/msgGotCount"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_weight="1.0"/>
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:weightSum="1"
-            android:layout_marginBottom="10dp">
-            <TextView
-                android:id="@+id/msgSendCounttitle"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.0"
-                android:text="Messages sent: "/>
-            <TextView
-                android:id="@+id/msgSendCount"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_weight="1.0"/>
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:weightSum="1"
-            android:layout_marginBottom="10dp">
-            <TextView
-                android:id="@+id/cancelCounttitle"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.0"
-                android:text="Cancelled: "/>
-            <TextView
-                android:id="@+id/cancelCount"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_weight="1.0"/>
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:weightSum="1"
-            android:layout_marginBottom="10dp">
-            <TextView
-                android:id="@+id/conaCounttitle"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.0"
-                android:text="Attempted con: "/>
-            <TextView
-                android:id="@+id/conaCount"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_weight="1.0"/>
-        </LinearLayout>
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <ScrollView
+            android:id="@+id/scrollViewLessImportantSection"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:weightSum="1"
-            android:layout_marginBottom="10dp">
-            <TextView
-                android:id="@+id/conCounttitle"
+            android:scrollbars="vertical"
+            android:fillViewport="true">
+
+            <LinearLayout android:id="@+id/layoutWrapScrollableA"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.0"
-                android:text="Connected: "/>
-            <TextView
-                android:id="@+id/conCount"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_weight="1.0"/>
-        </LinearLayout>
+                android:orientation="vertical"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:background="#FFECB3"
+                >
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:weightSum="1"
+                    android:layout_marginBottom="10dp">
+                    <TextView
+                        android:id="@+id/CountBoxtitle"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:text="Bytes: "/>
+                    <TextView
+                        android:id="@+id/CountBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1.0"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:weightSum="1"
+                    android:layout_marginBottom="10dp">
+                    <TextView
+                        android:id="@+id/msgGotCounttitle"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:text="Messages got: "/>
+                    <TextView
+                        android:id="@+id/msgGotCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1.0"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:weightSum="1"
+                    android:layout_marginBottom="10dp">
+                    <TextView
+                        android:id="@+id/msgSendCounttitle"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:text="Messages sent: "/>
+                    <TextView
+                        android:id="@+id/msgSendCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1.0"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:weightSum="1"
+                    android:layout_marginBottom="10dp">
+                    <TextView
+                        android:id="@+id/cancelCounttitle"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:text="Cancelled: "/>
+                    <TextView
+                        android:id="@+id/cancelCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1.0"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:weightSum="1"
+                    android:layout_marginBottom="10dp">
+                    <TextView
+                        android:id="@+id/conaCounttitle"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:text="Attempted con: "/>
+                    <TextView
+                        android:id="@+id/conaCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1.0"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:weightSum="1"
+                    android:layout_marginBottom="10dp">
+                    <TextView
+                        android:id="@+id/conCounttitle"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:text="Connected: "/>
+                    <TextView
+                        android:id="@+id/conCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1.0"/>
+                </LinearLayout>
+
+                <TextView android:id="@+id/outputInfoText0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 </RelativeLayout>

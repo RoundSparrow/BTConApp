@@ -42,17 +42,9 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         The value is determined by mExitWithDelay
         */
 
-    private int mExitWithDelay = 120; // 60 seconds test before exiting
-    private boolean mExitWithDelayIsOn = true; // set false if we are not uisng this app for testing
+    private ApplicationSettings appSettings = new ApplicationSettings();
 
-    final String instanceEncryptionPWD = "CHANGEYOURPASSWORDHERE";
- //   final String serviceTypeIdentifier = "_BTCL_p2p._tcp";
-    final String BtUUID                = "fa87c0d0-afac-11de-8a39-0800200c9a66";
-    final String Bt_NAME               = "Thaili_Bluetooth";
-
-    //todo remove after tests
-    final String serviceTypeIdentifier = "_HUMPPAA._tcp";
-
+    private TextView outputInfoText0;
 
     BTConnectorSettings conSettings;
     private final List<ServiceItem> connectedArray = new ArrayList<>();
@@ -161,11 +153,13 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         conSettings = new BTConnectorSettings();
-        conSettings.SERVICE_TYPE = serviceTypeIdentifier;
-        conSettings.MY_UUID = UUID.fromString(BtUUID);
-        conSettings.MY_NAME = Bt_NAME;
+        conSettings.SERVICE_TYPE = appSettings.serviceTypeIdentifier;
+        conSettings.MY_UUID = UUID.fromString(appSettings.BtUUID);
+        conSettings.MY_NAME = appSettings.Bt_NAME;
 
         mySpeech = new MyTextSpeech(this);
+
+        outputInfoText0 = (TextView) findViewById(R.id.outputInfoText0);
 
         mTestDataFile = new TestDataFile(this);
         mTestDataFile.StartNewFile();
@@ -174,14 +168,14 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         btButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mExitWithDelayIsOn = false;
+                appSettings.mExitWithDelayIsOn = false;
                 print_line("Debug","Exit with delay is set OFF");
                 if(mBTConnector != null){
                     mBTConnector.Stop();
                     mBTConnector = null;
                     ShowSummary();
                 }else{
-                    mBTConnector = new BTConnector(that,that,that,conSettings,instanceEncryptionPWD);
+                    mBTConnector = new BTConnector(that,that,that,conSettings, appSettings.instanceEncryptionPWD);
                     mBTConnector.Start();
                 }
             }
@@ -205,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
             bluetooth.enable();
         }
         //create & start connector
-        mBTConnector = new BTConnector(this,this,this,conSettings,instanceEncryptionPWD);
+        mBTConnector = new BTConnector(this,this,this,conSettings, appSettings.instanceEncryptionPWD);
         mBTConnector.Start();
     }
 
@@ -473,6 +467,10 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
     public void print_line(String who, String line) {
         Log.i("BtTestMaa" + who, line);
+        outputInfoText0.append(who);
+        outputInfoText0.append(": ");
+        outputInfoText0.append(line);
+        outputInfoText0.append("\n");
         timeCounter = 0;
     }
 

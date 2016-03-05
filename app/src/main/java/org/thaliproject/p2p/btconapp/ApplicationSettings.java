@@ -1,0 +1,17 @@
+package org.thaliproject.p2p.btconapp;
+
+/**
+ * Created by adminsag on 3/4/16.
+ */
+public class ApplicationSettings {
+	private int mExitWithDelay = 120; // 60 seconds test before exiting
+	protected boolean mExitWithDelayIsOn = true; // set false if we are not uisng this app for testing
+
+	final String instanceEncryptionPWD = "CHANGEYOURPASSWORDHERE";
+	//   final String serviceTypeIdentifier = "_BTCL_p2p._tcp";
+	final String BtUUID                = "fa87c0d0-afac-11de-8a39-0800200c9a66";
+	final String Bt_NAME               = "Thaili_Bluetooth";
+
+	//todo remove after tests
+	final String serviceTypeIdentifier = "_HUMPPAA._tcp";
+}
