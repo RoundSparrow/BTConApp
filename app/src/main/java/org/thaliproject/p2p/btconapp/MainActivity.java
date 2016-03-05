@@ -438,7 +438,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                             }
                         }
                         break;
-                    case BTConnectedThread.SOCKET_DISCONNEDTED: {
+                    case BTConnectedThread.SOCKET_DISCONNECTED: {
 
                         setTextBoxOffThreadBGColor(R.id.dataStatusBox, 0xffcccccc); //light Gray
 
@@ -508,13 +508,29 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         }
     }
 
-    public void print_line(String who, String line) {
+    public void print_line(final String who, final String line) {
         Log.i("BtTestMaa" + who, line);
-        outputInfoText0.append(who);
-        outputInfoText0.append(": ");
-        outputInfoText0.append(line);
-        outputInfoText0.append("\n");
-        timeCounter = 0;
+        // check if on Main thread
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            outputInfoText0.post(new Runnable() {
+                @Override
+                public void run() {
+                    outputInfoText0.append(who);
+                    outputInfoText0.append(": ");
+                    outputInfoText0.append(line);
+                    outputInfoText0.append("\n");
+                    timeCounter = 0;
+                }
+            });
+        }
+        else
+        {
+            outputInfoText0.append(who);
+            outputInfoText0.append(": ");
+            outputInfoText0.append(line);
+            outputInfoText0.append("\n");
+            timeCounter = 0;
+        }
     }
 
     @Override
