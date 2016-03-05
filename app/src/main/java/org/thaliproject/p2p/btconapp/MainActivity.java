@@ -314,11 +314,14 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
     }
 
 
-
     // The Handler that gets information back from the BluetoothChatService
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+    // ToDo: reviewing logcat, there seems a major flaw - this runs on Main thread for a long duration. the GUI becomes entirely unresponsive.
+            long handlerStartWhen = System.currentTimeMillis();
+            android.util.Log.i("MAIN", "mHandler " + msg.what + " Thread " + Thread.currentThread());
+
             switch (msg.what) {
                 case BTConnectedThread.MESSAGE_WRITE:
                     if (amIBigSender) {
@@ -333,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                                 mTestDataFile.SetTimeNow(TestDataFile.TimeForState.GoBigtData);
                                 long timeval = mTestDataFile.timeBetween(TestDataFile.TimeForState.GoBigtData, TestDataFile.TimeForState.GotData);
 
-                                final String sayoutloud = "Send " + appSettings.dataTestSizeWord + " in : " + (timeval / 1000) + " seconds.";
+                                final String sayoutloud = "Send " + appSettings.dataTestSizeWord + " in: " + (timeval / 1000) + " seconds.";
 
                                 // lets do saving after we got ack received
                                 //mTestDataFile.WriteDebugline("BigSender");
@@ -372,7 +375,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                                 mTestDataFile.SetTimeNow(TestDataFile.TimeForState.GoBigtData);
 
                                 long timeval = mTestDataFile.timeBetween(TestDataFile.TimeForState.GoBigtData, TestDataFile.TimeForState.GotData);
-                                final String sayoutloud = "Got " + appSettings.dataTestSizeWord + " in : " + (timeval / 1000) + " seconds.";
+                                final String sayoutloud = "Got " + appSettings.dataTestSizeWord + " in: " + (timeval / 1000) + " seconds.";
 
                                 mTestDataFile.WriteDebugline("Receiver");
 
@@ -401,7 +404,6 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                             //There are supposedly a possible race-condition bug with the service discovery
                             // thus to avoid it, we are delaying the service discovery start here
                             public void run() {
-
                                 if(mBTConnectedThread != null){
                                     mBTConnectedThread.Stop();
                                     mBTConnectedThread = null;
@@ -443,6 +445,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                 }
                 break;
             }
+            android.util.Log.i("MAIN", "END mHandler " + msg.what + " Thread " + Thread.currentThread() + " elapsed: " + (System.currentTimeMillis() - handlerStartWhen));
         }
     };
 
@@ -464,7 +467,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         wroteDataAmount = 0;
         gotDataAmount = 0;
 
-        mBTConnectedThread = new BTConnectedThread(socket,mHandler);
+        mBTConnectedThread = new BTConnectedThread(socket, mHandler);
         mBTConnectedThread.start();
 
         if(!amIBigSender) {

@@ -27,7 +27,8 @@ public class BTConnectedThread extends Thread {
     final String TAG  = "BTConnectedThread";
 
     public BTConnectedThread(BluetoothSocket socket, Handler handler) {
-        Log.d(TAG, "Creating BTConnectedThread");
+        super("BTConnectedThread");
+        Log.d(TAG, "Creating BTConnectedThread " + Thread.currentThread());
         mHandler = handler;
         mmSocket = socket;
 
@@ -44,9 +45,11 @@ public class BTConnectedThread extends Thread {
         }
         mmInStream = tmpIn;
         mmOutStream = tmpOut;
+        Log.d(TAG, "Created BTConnectedThread " + Thread.currentThread());
     }
+
     public void run() {
-        Log.i(TAG, "BTConnectedThread started");
+        Log.i(TAG, "BTConnectedThread started " + Thread.currentThread());
         byte[] buffer = new byte[ApplicationSettings.BUFFER_SIZE_XFER0];
         int bytes;
 
@@ -64,6 +67,7 @@ public class BTConnectedThread extends Thread {
             }
         }
     }
+
     /**
      * Write to the connected OutStream.
      * @param buffer The bytes to write
@@ -78,6 +82,7 @@ public class BTConnectedThread extends Thread {
             Log.e(TAG, "ConnectedThread  write failed: ", e);
         }
     }
+
     public void Stop() {
         if (mmInStream != null) {
             try {mmInStream.close();} catch (Exception e) {}
