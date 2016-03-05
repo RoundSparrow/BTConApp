@@ -25,6 +25,8 @@ public class BTConnectToThread extends Thread {
         }
         mSocket = tmp;
     }
+
+    @Override
     public void run() {
         print_line("Starting to connect");
         if(mSocket != null && callback != null) {
@@ -45,7 +47,8 @@ public class BTConnectToThread extends Thread {
     }
 
     private void print_line(String message){
-     //   Log.d("BTConnectToThread",  "BTConnectToThread: " + message);
+        // Log.d("BTConnectToThread",  "BTConnectToThread: " + message);
+        LogKeeper.addLogEntry("BT_CT", message, 0, 0);
     }
 
     public void stopBluetooth() {

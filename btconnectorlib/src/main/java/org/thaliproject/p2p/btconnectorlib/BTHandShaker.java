@@ -68,7 +68,8 @@ public class BTHandShaker {
     }
 
     private void print_line(String message){
-           Log.d("BTHandShaker",  "BTHandShaker: " + message);
+        Log.d("BTHandShaker",  "BTHandShaker: " + message);
+        LogKeeper.addLogEntry("BT_HS", message, 0, 0);
     }
 
     // The Handler that gets information back from the BluetoothChatService
