@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
             long receivingNow = (System.currentTimeMillis() - receivingTimeOutBaseTime);
             if(receivingNow > appSettings.receiveTimeMaximum) {
                 if (mBTConnectedThread != null) {
-                    mBTConnectedThread.Stop();
+                    mBTConnectedThread.stopConnection();
                     mBTConnectedThread = null;
                 }
                 print_line("CHAT", "We got timeout on receiving data, lets Disconnect.");
@@ -468,7 +468,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                             // thus to avoid it, we are delaying the service discovery start here
                             public void run() {
                                 if(mBTConnectedThread != null){
-                                    mBTConnectedThread.Stop();
+                                    mBTConnectedThread.stopConnection();
                                     mBTConnectedThread = null;
                                 }
                                 //Re-start the loop
@@ -497,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                     ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xffcccccc); //light Gray
 
                     if (mBTConnectedThread != null) {
-                        mBTConnectedThread.Stop();
+                        mBTConnectedThread.stopConnection();
                         mBTConnectedThread = null;
                     }
                     print_line("CHAT", "WE are Disconnected now.");
@@ -516,7 +516,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         // with this sample we only have one connection at any time
         // thus lets delete the previous if we had any
         if (mBTConnectedThread != null) {
-            mBTConnectedThread.Stop();
+            mBTConnectedThread.stopConnection();
             mBTConnectedThread = null;
         }
 

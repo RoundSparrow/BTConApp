@@ -27,7 +27,7 @@ public class WifiServiceAdvertiser {
         return lastError;
     }
 
-    public void start(String instance, String service_type) {
+    public void startAdvertising(String instance, String service_type) {
 
         Map<String, String> record = new HashMap<>();
         record.put("available", "visible");
@@ -36,11 +36,13 @@ public class WifiServiceAdvertiser {
 
         debug_print("Add local service :" + instance);
         p2p.addLocalService(channel, service, new WifiP2pManager.ActionListener() {
+            @Override
             public void onSuccess() {
                 lastError = -1;
                 debug_print("Added local service");
             }
 
+            @Override
             public void onFailure(int reason) {
                 lastError = reason;
                 debug_print("Adding local service failed, error code " + reason);
@@ -48,13 +50,15 @@ public class WifiServiceAdvertiser {
         });
     }
 
-    public void stop() {
+    public void stopAdvertising() {
         p2p.clearLocalServices(channel, new WifiP2pManager.ActionListener() {
+            @Override
             public void onSuccess() {
                 lastError = -1;
                 debug_print("Cleared local services");
             }
 
+            @Override
             public void onFailure(int reason) {
                 lastError = reason;
                 debug_print("Clearing local services failed, error code " + reason);

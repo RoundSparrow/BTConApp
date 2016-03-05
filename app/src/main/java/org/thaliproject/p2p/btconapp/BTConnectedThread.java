@@ -107,7 +107,7 @@ public class BTConnectedThread extends Thread {
         writeThread.start();
     }
 
-    public void Stop() {
+    public void stopConnection() {
         if (mmInStream != null) {
             try {mmInStream.close();} catch (Exception e) {}
             mmInStream = null;

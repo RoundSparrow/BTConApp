@@ -175,7 +175,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
             print_line("", "Starting services address: " + advertLine + " " + ConSettings);
 
             mWifiAccessPoint = new WifiServiceAdvertiser(p2p, channel);
-            mWifiAccessPoint.start(advertLine, ConSettings.SERVICE_TYPE);
+            mWifiAccessPoint.startAdvertising(advertLine, ConSettings.SERVICE_TYPE);
 
             mWifiServiceSearcher = new WifiServiceSearcher(this.context, p2p, channel, this,ConSettings.SERVICE_TYPE);
             mWifiServiceSearcher.start();
@@ -187,7 +187,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
         print_line("", "StoppingServices");
         setState(State.Idle);
         if (mWifiAccessPoint != null) {
-            mWifiAccessPoint.stop();
+            mWifiAccessPoint.stopAdvertising();
             mWifiAccessPoint = null;
         }
 
@@ -383,7 +383,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
     public void WifiStateChanged(int state) {
         if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
             if (mBluetoothBase != null && mBluetoothBase.isBluetoothEnabled()) {
-                // we got wifi back, so we can re-start now
+                // we got wifi back, so we can re-startAdvertising now
                 print_line("WB", "Wifi is now enabled !");
                 startAll();
             }

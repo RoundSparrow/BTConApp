@@ -59,10 +59,10 @@ public class WifiServiceAdvertiserTest extends InstrumentationTestCase {
 
         WifiServiceAdvertiser advert = new WifiServiceAdvertiser(p2p,channel);
 
-        advert.start("Humppaa");
+        advert.startAdvertising("Humppaa");
         assertEquals(advert.getLastError(),-1);
 
-        advert.stop();
+        advert.stopAdvertising();
         assertEquals(advert.getLastError(),-1);
     }
 

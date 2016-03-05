@@ -42,7 +42,7 @@ public class BTHandShaker {
     }
 
     public void startHandshake() {
-        print_line("start");
+        print_line("startAdvertising");
         HandShakeTimeOutTimer.start();
 
         mBTHandShakeSocketTread = new BTHandShakeSocketTread(mmSocket,mHandler);

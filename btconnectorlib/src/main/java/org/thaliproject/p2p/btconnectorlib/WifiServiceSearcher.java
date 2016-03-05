@@ -42,13 +42,15 @@ public class WifiServiceSearcher {
 
     ServiceState myServiceState = ServiceState.NONE;
 
-
     final List<ServiceItem> myServiceList = new ArrayList<>();
 
     final CountDownTimer ServiceDiscoveryTimeOutTimer = new CountDownTimer(60000, 1000) {
+        @Override
         public void onTick(long millisUntilFinished) {
             // not using
         }
+
+        @Override
         public void onFinish() {
             stopDiscovery();
             startPeerDiscovery();
@@ -185,10 +187,12 @@ public class WifiServiceSearcher {
 
     private void stopPeerDiscovery() {
         p2p.stopPeerDiscovery(channel, new WifiP2pManager.ActionListener() {
+            @Override
             public void onSuccess() {
                 debug_print("Stopped peer discovery");
             }
 
+            @Override
             public void onFailure(int reason) {
                 debug_print("Stopping peer discovery failed, error code " + reason);
             }
@@ -228,7 +232,7 @@ public class WifiServiceSearcher {
                             }
                         });
                     }
-                }, 1000);
+                }, 1000L);
             }
 
             @Override
@@ -239,21 +243,21 @@ public class WifiServiceSearcher {
                 ServiceDiscoveryTimeOutTimer.start();
             }
         });
-
     }
 
     private void stopDiscovery() {
         p2p.clearServiceRequests(channel, new WifiP2pManager.ActionListener() {
             @Override
-            public void onSuccess() {debug_print("Cleared service requests");}
+            public void onSuccess() { debug_print("Cleared service requests"); }
 
             @Override
-            public void onFailure(int reason) {debug_print("Clearing service requests failed, error code " + reason);}
+            public void onFailure(int reason) { debug_print("Clearing service requests failed, error code " + reason); }
         });
     }
 
-    private void debug_print(String buffer) {
-        Log.i("Service searcher", buffer);
+    private void debug_print(String output) {
+        Log.i("WiFiServiceSearcher", output);
+        LogKeeper.addLogEntry("WiFi_SS", output, 0, 0);
     }
 
     private class ServiceSearcherReceiver extends BroadcastReceiver {
