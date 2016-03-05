@@ -52,13 +52,16 @@ public class BTConnectedThread extends Thread {
         Log.d(TAG, "Created BTConnectedThread " + Thread.currentThread());
     }
 
+
+    private boolean keepReading = true;
+
     @Override
     public void run() {
         Log.i(TAG, "BTConnectedThread run() started " + Thread.currentThread());
         byte[] readBuffer = new byte[bufferSizeDesired];
         int bytesRead;
 
-        while (true) {
+        while (keepReading) {
             try {
                 if(mmInStream != null) {
                     Log.d(TAG, "Starting read on Thread " + Thread.currentThread());
