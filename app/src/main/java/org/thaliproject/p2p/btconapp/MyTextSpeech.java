@@ -11,6 +11,7 @@ import java.util.Locale;
 public class MyTextSpeech implements TextToSpeech.OnInitListener {
     private final TextToSpeech _tts;
     private HashMap<String, String> params = new HashMap<String, String>();
+    public volatile boolean isReady = false;
 
     public MyTextSpeech(Context context) {
         // start with full volume.
@@ -24,6 +25,7 @@ public class MyTextSpeech implements TextToSpeech.OnInitListener {
             _tts.stop();
             _tts.shutdown();
         }
+        isReady = false;
     }
 
     @Override
@@ -37,6 +39,7 @@ public class MyTextSpeech implements TextToSpeech.OnInitListener {
             else {
                 String msg = "hi there, i'm ready";
                 speak(msg);
+                isReady = true;
             }
         }
     }

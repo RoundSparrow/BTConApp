@@ -205,16 +205,24 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         mBTConnector.Start();
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        timeHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // ToDo: Settings / Shared Preferences slider
+    private Runnable speakVolumeChange = new Runnable() {
+        @Override
+        public void run() {
+            // ToDo: Settings / Shared Preferences slider
+            if (mySpeech.isReady) {
                 mySpeech.setVolumeLevel("0.5");
                 mySpeech.speak("Volume reduced");
             }
-        }, 1500L);
+            else
+            {
+                timeHandler.postDelayed(speakVolumeChange, 1000L);
+             }
+        }
+    };
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        timeHandler.postDelayed(speakVolumeChange, 1500L);
 
         super.onPostCreate(savedInstanceState);
     }
