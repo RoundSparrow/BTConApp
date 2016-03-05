@@ -35,6 +35,7 @@
                 android:layout_weight="1.0"/>
         </LinearLayout>
 
+<!-- ToDo: why is this one TextView wrapped in a LinearLayout? -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
@@ -47,8 +48,10 @@
                 android:id="@+id/statusBox"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:padding="4dp"
                 android:layout_weight="1.0"/>
         </LinearLayout>
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
@@ -63,6 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.0"/>
         </LinearLayout>
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"

@@ -497,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
     }
 
     private TextView statusBox;
-    private int COLOR_BACKGROUD_CONNECTING = Color.parseColor("#EF5350");
+    private int COLOR_BACKGROUD_CONNECTING = Color.parseColor("#EF9A9A");
 
     @Override
     public void StateChanged(BTConnector.State newState) {
@@ -523,7 +523,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                 }
                 break;
             case Connecting: {
-                statusBox.setBackgroundColor(COLOR_BACKGROUD_CONNECTING);  // red Material Design #EF5350, previous was 0xffff0000
+                statusBox.setBackgroundColor(COLOR_BACKGROUD_CONNECTING);  // red Material Design #EF5350 too dark, now #EF9A9A, previous was 0xffff0000
                 ConAttemptCounter = ConAttemptCounter + 1;
                     ((TextView) findViewById(R.id.conaCount)).setText("" + ConAttemptCounter);
                     if (mTestDataFile != null) {
