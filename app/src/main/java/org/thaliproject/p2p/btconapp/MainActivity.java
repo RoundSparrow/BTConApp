@@ -393,7 +393,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                                 }
 
                                 //got message
-                                ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xff00ff00); // green
+                                setTextBoxOffThreadBGColor(R.id.dataStatusBox, 0xff00ff00); // green
                                 SayAck(gotDataAmount);
                             }
                         } else if (gotFirstMessage) {
@@ -459,8 +459,13 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         };
     }
 
-    private void setTextBoxOffThreadBGColor(int dataStatusBox, int colorInt) {
-        findViewById(dataStatusBox).setBackgroundColor(colorInt);
+    private void setTextBoxOffThreadBGColor(final int dataStatusBox, final int colorInt) {
+        outputInfoText0.post(new Runnable() {
+            @Override
+            public void run() {
+                findViewById(dataStatusBox).setBackgroundColor(colorInt);
+            }
+        });
     }
 
     private void setTextBoxOffThread(final int textBoxId, final String textToSet)
