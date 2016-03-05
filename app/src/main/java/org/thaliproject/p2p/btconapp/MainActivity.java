@@ -11,6 +11,8 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
@@ -186,6 +188,10 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         timeHandler = new Handler();
         mStatusChecker.run();
 
+        HandlerThread btConnHandlerThread = new HandlerThread("BTConnHandlerThread");
+        btConnHandlerThread.start();
+        setHandler(btConnHandlerThread.getLooper());
+
         //for demo & testing to keep lights on
         // ToDo: honor the Menu checkbox
         final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -315,139 +321,143 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
 
     // The Handler that gets information back from the BluetoothChatService
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-    // ToDo: reviewing logcat, there seems a major flaw - this runs on Main thread for a long duration. the GUI becomes entirely unresponsive.
-            long handlerStartWhen = System.currentTimeMillis();
-            android.util.Log.i("MAIN", "mHandler " + msg.what + " Thread " + Thread.currentThread());
+    private Handler mHandler;
 
-            switch (msg.what) {
-                case BTConnectedThread.MESSAGE_WRITE:
-                    if (amIBigSender) {
-                        timeCounter = 0;
-                        wroteDataAmount = wroteDataAmount + msg.arg1;
-                        ((TextView) findViewById(R.id.CountBox)).setText("" + wroteDataAmount);
-                        if (wroteDataAmount == appSettings.BUFFER_SIZE_XFER0) {
-                            if (mTestDataFile != null) {
-                                // lets do saving after we got ack received
-                                //sendMessageCounter = sendMessageCounter+ 1;
-                                //((TextView) findViewById(R.id.msgSendCount)).setText("" + sendMessageCounter);
-                                mTestDataFile.SetTimeNow(TestDataFile.TimeForState.GoBigtData);
-                                long timeval = mTestDataFile.timeBetween(TestDataFile.TimeForState.GoBigtData, TestDataFile.TimeForState.GotData);
+    private void setHandler(Looper threadLooper) {
+        mHandler = new Handler(threadLooper) {
+            @Override
+            public void handleMessage(Message msg) {
+                // ToDo: reviewing logcat, there seems a major flaw - this runs on Main thread for a long duration. the GUI becomes entirely unresponsive.
+                long handlerStartWhen = System.currentTimeMillis();
+                android.util.Log.i("MAIN", "mHandler " + msg.what + " Thread " + Thread.currentThread());
 
-                                final String sayoutloud = "Send " + appSettings.dataTestSizeWord + " in: " + (timeval / 1000) + " seconds.";
+                switch (msg.what) {
+                    case BTConnectedThread.MESSAGE_WRITE:
+                        if (amIBigSender) {
+                            timeCounter = 0;
+                            wroteDataAmount = wroteDataAmount + msg.arg1;
+                            ((TextView) findViewById(R.id.CountBox)).setText("" + wroteDataAmount);
+                            if (wroteDataAmount == appSettings.BUFFER_SIZE_XFER0) {
+                                if (mTestDataFile != null) {
+                                    // lets do saving after we got ack received
+                                    //sendMessageCounter = sendMessageCounter+ 1;
+                                    //((TextView) findViewById(R.id.msgSendCount)).setText("" + sendMessageCounter);
+                                    mTestDataFile.SetTimeNow(TestDataFile.TimeForState.GoBigtData);
+                                    long timeval = mTestDataFile.timeBetween(TestDataFile.TimeForState.GoBigtData, TestDataFile.TimeForState.GotData);
 
-                                // lets do saving after we got ack received
-                                //mTestDataFile.WriteDebugline("BigSender");
+                                    final String sayoutloud = "Send " + appSettings.dataTestSizeWord + " in: " + (timeval / 1000) + " seconds.";
 
-                                print_line("CHAT", sayoutloud);
-                                mySpeech.speak(sayoutloud);
+                                    // lets do saving after we got ack received
+                                    //mTestDataFile.WriteDebugline("BigSender");
+
+                                    print_line("CHAT", sayoutloud);
+                                    mySpeech.speak(sayoutloud);
+                                }
                             }
-                        }
-                    } else {
-                        byte[] writeBuf = (byte[]) msg.obj;// construct a string from the buffer
-                        String writeMessage = new String(writeBuf);
-                        if (mTestDataFile != null) {
-                            mTestDataFile.SetTimeNow(TestDataFile.TimeForState.GotData);
-                        }
+                        } else {
+                            byte[] writeBuf = (byte[]) msg.obj;// construct a string from the buffer
+                            String writeMessage = new String(writeBuf);
+                            if (mTestDataFile != null) {
+                                mTestDataFile.SetTimeNow(TestDataFile.TimeForState.GotData);
+                            }
 
-                        wroteDataAmount = 0;
-                        wroteFirstMessage = true;
-                        print_line("CHAT", "Wrote: " + writeMessage);
-                    }
-                    break;
-                case BTConnectedThread.MESSAGE_READ:
-                    if (!amIBigSender) {
-                        gotDataAmount = gotDataAmount + msg.arg1;
-                        timeCounter = 0;
-                        ((TextView) findViewById(R.id.CountBox)).setText("" + gotDataAmount);
-                        BigBufferReceivingTimeOut.cancel();
-                        BigBufferReceivingTimeOut.start();
-                        if (gotDataAmount == appSettings.BUFFER_SIZE_XFER0) {
+                            wroteDataAmount = 0;
+                            wroteFirstMessage = true;
+                            print_line("CHAT", "Wrote: " + writeMessage);
+                        }
+                        break;
+                    case BTConnectedThread.MESSAGE_READ:
+                        if (!amIBigSender) {
+                            gotDataAmount = gotDataAmount + msg.arg1;
+                            timeCounter = 0;
+                            ((TextView) findViewById(R.id.CountBox)).setText("" + gotDataAmount);
                             BigBufferReceivingTimeOut.cancel();
+                            BigBufferReceivingTimeOut.start();
+                            if (gotDataAmount == appSettings.BUFFER_SIZE_XFER0) {
+                                BigBufferReceivingTimeOut.cancel();
 
-                            gotFirstMessage = false;
-                            gotMessageCounter = gotMessageCounter+ 1;
-                            ((TextView) findViewById(R.id.msgGotCount)).setText("" + gotMessageCounter);
+                                gotFirstMessage = false;
+                                gotMessageCounter = gotMessageCounter + 1;
+                                ((TextView) findViewById(R.id.msgGotCount)).setText("" + gotMessageCounter);
 
-                            if (mTestDataFile != null) {
-                                mTestDataFile.SetTimeNow(TestDataFile.TimeForState.GoBigtData);
+                                if (mTestDataFile != null) {
+                                    mTestDataFile.SetTimeNow(TestDataFile.TimeForState.GoBigtData);
 
-                                long timeval = mTestDataFile.timeBetween(TestDataFile.TimeForState.GoBigtData, TestDataFile.TimeForState.GotData);
-                                final String sayoutloud = "Got " + appSettings.dataTestSizeWord + " in: " + (timeval / 1000) + " seconds.";
+                                    long timeval = mTestDataFile.timeBetween(TestDataFile.TimeForState.GoBigtData, TestDataFile.TimeForState.GotData);
+                                    final String sayoutloud = "Got " + appSettings.dataTestSizeWord + " in: " + (timeval / 1000) + " seconds.";
 
-                                mTestDataFile.WriteDebugline("Receiver");
+                                    mTestDataFile.WriteDebugline("Receiver");
 
-                                print_line("CHAT", sayoutloud);
-                                mySpeech.speak(sayoutloud);
+                                    print_line("CHAT", sayoutloud);
+                                    mySpeech.speak(sayoutloud);
+                                }
+
+                                //got message
+                                ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xff00ff00); // green
+                                SayAck(gotDataAmount);
                             }
+                        } else if (gotFirstMessage) {
+                            print_line("CHAT", "we got Ack message back, so lets disconnect.");
 
                             //got message
                             ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xff00ff00); // green
-                            SayAck(gotDataAmount);
-                        }
-                    } else if(gotFirstMessage) {
-                        print_line("CHAT", "we got Ack message back, so lets disconnect.");
 
-                        //got message
-                        ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xff00ff00); // green
-
-                        sendMessageCounter = sendMessageCounter+ 1;
-                        ((TextView) findViewById(R.id.msgSendCount)).setText("" + sendMessageCounter);
-                        if (mTestDataFile != null) {
-                            mTestDataFile.WriteDebugline("BigSender");
-                        }
-                        // we got Ack message back, so lets disconnect
-                        final Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            //There are supposedly a possible race-condition bug with the service discovery
-                            // thus to avoid it, we are delaying the service discovery start here
-                            public void run() {
-                                if(mBTConnectedThread != null){
-                                    mBTConnectedThread.Stop();
-                                    mBTConnectedThread = null;
-                                }
-                                //Re-start the loop
-                                if(mBTConnector != null) {
-                                    mBTConnector.Start();
-                                }
+                            sendMessageCounter = sendMessageCounter + 1;
+                            ((TextView) findViewById(R.id.msgSendCount)).setText("" + sendMessageCounter);
+                            if (mTestDataFile != null) {
+                                mTestDataFile.WriteDebugline("BigSender");
                             }
-                        }, 1000);
-                    }else{
-                        byte[] readBuf = (byte[]) msg.obj;// construct a string from the valid bytes in the buffer
-                        String readMessage = new String(readBuf, 0, msg.arg1);
-                        if (mTestDataFile != null) {
-                            mTestDataFile.SetTimeNow(TestDataFile.TimeForState.GotData);
-                        }
+                            // we got Ack message back, so lets disconnect
+                            final Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                //There are supposedly a possible race-condition bug with the service discovery
+                                // thus to avoid it, we are delaying the service discovery start here
+                                public void run() {
+                                    if (mBTConnectedThread != null) {
+                                        mBTConnectedThread.Stop();
+                                        mBTConnectedThread = null;
+                                    }
+                                    //Re-start the loop
+                                    if (mBTConnector != null) {
+                                        mBTConnector.Start();
+                                    }
+                                }
+                            }, 1000);
+                        } else {
+                            byte[] readBuf = (byte[]) msg.obj;// construct a string from the valid bytes in the buffer
+                            String readMessage = new String(readBuf, 0, msg.arg1);
+                            if (mTestDataFile != null) {
+                                mTestDataFile.SetTimeNow(TestDataFile.TimeForState.GotData);
+                            }
 
-                        gotFirstMessage = true;
-                        print_line("CHAT", "Got message: " + readMessage);
-                        if (amIBigSender) {
-                            ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xff0000ff); //Blue
-                            sayItWithBigBuffer();
+                            gotFirstMessage = true;
+                            print_line("CHAT", "Got message: " + readMessage);
+                            if (amIBigSender) {
+                                ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xff0000ff); //Blue
+                                sayItWithBigBuffer();
+                            }
+                        }
+                        break;
+                    case BTConnectedThread.SOCKET_DISCONNEDTED: {
+
+                        ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xffcccccc); //light Gray
+
+                        if (mBTConnectedThread != null) {
+                            mBTConnectedThread.Stop();
+                            mBTConnectedThread = null;
+                        }
+                        print_line("CHAT", "WE are Disconnected now.");
+                        //Re-start the loop
+                        if (mBTConnector != null) {
+                            mBTConnector.Start();
                         }
                     }
                     break;
-                case BTConnectedThread.SOCKET_DISCONNEDTED: {
-
-                    ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xffcccccc); //light Gray
-
-                    if (mBTConnectedThread != null) {
-                        mBTConnectedThread.Stop();
-                        mBTConnectedThread = null;
-                    }
-                    print_line("CHAT", "WE are Disconnected now.");
-                    //Re-start the loop
-                    if(mBTConnector != null) {
-                        mBTConnector.Start();
-                    }
                 }
-                break;
+                android.util.Log.i("MAIN", "END mHandler " + msg.what + " Thread " + Thread.currentThread() + " elapsed: " + (System.currentTimeMillis() - handlerStartWhen));
             }
-            android.util.Log.i("MAIN", "END mHandler " + msg.what + " Thread " + Thread.currentThread() + " elapsed: " + (System.currentTimeMillis() - handlerStartWhen));
-        }
-    };
+        };
+    }
 
     public void startChat(BluetoothSocket socket, boolean incoming) {
         // with this sample we only have one connection at any time
