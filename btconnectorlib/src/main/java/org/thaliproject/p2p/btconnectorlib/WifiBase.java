@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by juksilve on 6.3.2015.
  */
-public class WifiBase implements WifiP2pManager.ChannelListener{
+public class WifiBase implements WifiP2pManager.ChannelListener {
 
     public interface  WifiStatusCallBack{
         void WifiStateChanged(int state);
@@ -38,7 +38,7 @@ public class WifiBase implements WifiP2pManager.ChannelListener{
         this.callback = handler;
     }
 
-    public boolean Start(){
+    public boolean start(){
 
         boolean ret =false;
 
@@ -57,7 +57,8 @@ public class WifiBase implements WifiP2pManager.ChannelListener{
 
         return ret;
     }
-    public void Stop(){
+
+    public void stop(){
         this.context.unregisterReceiver(mBRReceiver);
     }
 

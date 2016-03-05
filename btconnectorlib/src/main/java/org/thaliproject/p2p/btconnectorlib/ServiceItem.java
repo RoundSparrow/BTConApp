@@ -4,14 +4,15 @@ package org.thaliproject.p2p.btconnectorlib;
 /**
  * Created by juksilve on 12.3.2015.
  */
-public class ServiceItem{
+public class ServiceItem {
 
-    public ServiceItem(String instance,String type,String address, String name){
+    public ServiceItem(String instance, String type, String address, String name) {
         this.instanceName = instance;
         this.serviceType = type;
         this.deviceAddress = address;
         this.deviceName =  name;
     }
+
     public final String instanceName;
     public final String serviceType;
     public final String deviceAddress;

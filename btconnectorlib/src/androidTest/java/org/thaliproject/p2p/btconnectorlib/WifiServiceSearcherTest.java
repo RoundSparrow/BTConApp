@@ -38,11 +38,11 @@ public class WifiServiceSearcherTest extends InstrumentationTestCase {
         super.tearDown();
 
         if(sSearcher != null) {
-            sSearcher.Stop();
+            sSearcher.stop();
             sSearcher = null;
         }
         if(wBase != null) {
-            wBase.Stop();
+            wBase.stop();
             wBase = null;
         }
     }
@@ -64,7 +64,7 @@ public class WifiServiceSearcherTest extends InstrumentationTestCase {
             public void gotServicesList(List<ServiceItem> list) {}
         });
 
-        wBase.Start();
+        wBase.start();
         WifiP2pManager.Channel channel = wBase.GetWifiChannel();
         WifiP2pManager p2p = wBase.GetWifiP2pManager();
 
@@ -81,7 +81,7 @@ public class WifiServiceSearcherTest extends InstrumentationTestCase {
             }
         });
 
-        sSearcher.Start();
+        sSearcher.start();
 
         boolean await = gotPeersLatch.await(30, TimeUnit.SECONDS);
         assertTrue(await);

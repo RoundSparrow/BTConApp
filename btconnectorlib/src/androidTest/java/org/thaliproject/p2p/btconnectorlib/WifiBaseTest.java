@@ -37,7 +37,7 @@ public class WifiBaseTest extends InstrumentationTestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
         if(wBase != null) {
-            wBase.Stop();
+            wBase.stop();
             wBase = null;
         }
     }
@@ -73,7 +73,7 @@ public class WifiBaseTest extends InstrumentationTestCase {
         });
         assertNotNull(wBase);
 
-        boolean startOk = wBase.Start();
+        boolean startOk = wBase.start();
         assertTrue("This device does not support Wi-Fi Direct", startOk);
 
         WifiP2pManager.Channel channel = wBase.GetWifiChannel();

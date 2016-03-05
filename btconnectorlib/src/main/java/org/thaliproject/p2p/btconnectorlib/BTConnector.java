@@ -108,11 +108,11 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
         Boolean btOk = mBluetoothBase.start();
 
         if(mWifiBase != null){
-            mWifiBase.Stop();
+            mWifiBase.stop();
             mWifiBase = null;
         }
         mWifiBase = new WifiBase(this.context, this);
-        Boolean WifiOk = mWifiBase.Start();
+        Boolean WifiOk = mWifiBase.start();
 
         if (!WifiOk || !btOk) {
             print_line("", "BT available: " + btOk + ", wifi available: " + WifiOk);
@@ -129,7 +129,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
     public void stop() {
         stopAll();
         if (mWifiBase != null) {
-            mWifiBase.Stop();
+            mWifiBase.stop();
             mWifiBase = null;
         }
 
@@ -175,10 +175,10 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
             print_line("", "Starting services address: " + advertLine + " " + ConSettings);
 
             mWifiAccessPoint = new WifiServiceAdvertiser(p2p, channel);
-            mWifiAccessPoint.Start(advertLine,ConSettings.SERVICE_TYPE);
+            mWifiAccessPoint.start(advertLine, ConSettings.SERVICE_TYPE);
 
             mWifiServiceSearcher = new WifiServiceSearcher(this.context, p2p, channel, this,ConSettings.SERVICE_TYPE);
-            mWifiServiceSearcher.Start();
+            mWifiServiceSearcher.start();
             setState(State.FindingPeers);
         }
     }
@@ -192,7 +192,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
         }
 
         if (mWifiServiceSearcher != null) {
-            mWifiServiceSearcher.Stop();
+            mWifiServiceSearcher.stop();
             mWifiServiceSearcher = null;
         }
     }

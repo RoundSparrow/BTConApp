@@ -48,13 +48,13 @@ public class BTHandShaker {
         mBTHandShakeSocketTread = new BTHandShakeSocketTread(mmSocket,mHandler);
         mBTHandShakeSocketTread.start();
 
-        if(!isIncoming) {
+        if (!isIncoming) {
             mBTHandShakeSocketTread.write(handShakeBuf.getBytes());
         }
     }
 
     public void tryCloseSocket() {
-        if(mBTHandShakeSocketTread != null){
+        if (mBTHandShakeSocketTread != null){
             mBTHandShakeSocketTread.closeSocket();
         }
     }
@@ -62,7 +62,7 @@ public class BTHandShaker {
     public void stopBluetooth() {
         print_line("stopBluetooth");
         HandShakeTimeOutTimer.cancel();
-        if(mBTHandShakeSocketTread != null){
+        if (mBTHandShakeSocketTread != null) {
             mBTHandShakeSocketTread = null;
         }
     }

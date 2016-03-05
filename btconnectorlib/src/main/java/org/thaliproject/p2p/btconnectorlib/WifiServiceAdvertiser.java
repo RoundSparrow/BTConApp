@@ -17,15 +17,17 @@ public class WifiServiceAdvertiser {
     private final WifiP2pManager.Channel channel;
 
     int lastError = -1;
+
     public WifiServiceAdvertiser(WifiP2pManager Manager, WifiP2pManager.Channel Channel) {
         this.p2p = Manager;
         this.channel = Channel;
     }
 
-    public int GetLastError(){
+    public int getLastError(){
         return lastError;
     }
-    public void Start(String instance,String service_type) {
+
+    public void start(String instance, String service_type) {
 
         Map<String, String> record = new HashMap<>();
         record.put("available", "visible");

@@ -33,7 +33,7 @@ public class WifiServiceAdvertiserTest extends InstrumentationTestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
         if(wBase != null) {
-            wBase.Stop();
+            wBase.stop();
             wBase = null;
         }
     }
@@ -53,17 +53,17 @@ public class WifiServiceAdvertiserTest extends InstrumentationTestCase {
         });
         assertNotNull(wBase);
 
-        wBase.Start();
+        wBase.start();
         WifiP2pManager.Channel channel = wBase.GetWifiChannel();
         WifiP2pManager p2p = wBase.GetWifiP2pManager();
 
         WifiServiceAdvertiser advert = new WifiServiceAdvertiser(p2p,channel);
 
-        advert.Start("Humppaa");
-        assertEquals(advert.GetLastError(),-1);
+        advert.start("Humppaa");
+        assertEquals(advert.getLastError(),-1);
 
         advert.stop();
-        assertEquals(advert.GetLastError(),-1);
+        assertEquals(advert.getLastError(),-1);
     }
 
 }

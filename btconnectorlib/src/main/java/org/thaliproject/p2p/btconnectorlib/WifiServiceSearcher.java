@@ -39,6 +39,7 @@ public class WifiServiceSearcher {
         DiscoverPeer,
         DiscoverService
     }
+
     ServiceState myServiceState = ServiceState.NONE;
 
 
@@ -56,10 +57,10 @@ public class WifiServiceSearcher {
 
     CountDownTimer peerDiscoveryTimer = null;
 
-    public WifiServiceSearcher(Context Context, WifiP2pManager Manager, WifiP2pManager.Channel Channel, WifiBase.WifiStatusCallBack handler,String serviceType) {
-        this.context = Context;
-        this.p2p = Manager;
-        this.channel = Channel;
+    public WifiServiceSearcher(Context inContext, WifiP2pManager inManager, WifiP2pManager.Channel managerChannel, WifiBase.WifiStatusCallBack handler,String serviceType) {
+        this.context = inContext;
+        this.p2p = inManager;
+        this.channel = managerChannel;
         this.callback = handler;
         this.SERVICE_TYPE = serviceType;
 
@@ -90,7 +91,7 @@ public class WifiServiceSearcher {
         return  myServiceList;
     }
 
-    public void Start() {
+    public void start() {
 
         receiver = new ServiceSearcherReceiver();
         IntentFilter filter = new IntentFilter();
@@ -101,15 +102,16 @@ public class WifiServiceSearcher {
 
         peerListListener = new WifiP2pManager.PeerListListener() {
 
+            @Override
             public void onPeersAvailable(WifiP2pDeviceList peers) {
 
                 final WifiP2pDeviceList pers = peers;
                 if (pers.getDeviceList().size() > 0) {
                     // this is called still multiple time time-to-time
                     // so need to make sure we only make one service discovery call
-                    if(myServiceState != ServiceState.DiscoverService) {
+                    if (myServiceState != ServiceState.DiscoverService) {
 
-                        if(callback != null) {
+                        if (callback != null) {
                             callback.gotPeersList(pers.getDeviceList());
                         }
                         //tests have shown that if we have multiple peers with services advertising
@@ -124,6 +126,7 @@ public class WifiServiceSearcher {
 
         WifiP2pManager.DnsSdServiceResponseListener serviceListener = new WifiP2pManager.DnsSdServiceResponseListener() {
 
+            @Override
             public void onDnsSdServiceAvailable(String instanceName, String serviceType, WifiP2pDevice device) {
 
                 debug_print("Found Service, :" + instanceName + ", type" + serviceType + ":");
@@ -154,7 +157,7 @@ public class WifiServiceSearcher {
         startPeerDiscovery();
     }
 
-    public void Stop() {
+    public void stop() {
         this.context.unregisterReceiver(receiver);
         ServiceDiscoveryTimeOutTimer.cancel();
         peerDiscoveryTimer.cancel();
@@ -164,10 +167,13 @@ public class WifiServiceSearcher {
 
     private void startPeerDiscovery() {
         p2p.discoverPeers(channel, new WifiP2pManager.ActionListener() {
+            @Override
             public void onSuccess() {
                 myServiceState = ServiceState.DiscoverPeer;
                 debug_print("Started peer discovery");
             }
+
+            @Override
             public void onFailure(int reason) {
                 myServiceState = ServiceState.NONE;
                 debug_print("Starting peer discovery failed, error code " + reason);
@@ -197,6 +203,7 @@ public class WifiServiceSearcher {
         final Handler handler = new Handler();
         p2p.addServiceRequest(channel, request, new WifiP2pManager.ActionListener() {
 
+            @Override
             public void onSuccess() {
                 debug_print("Added service request");
                 handler.postDelayed(new Runnable() {
@@ -204,11 +211,14 @@ public class WifiServiceSearcher {
                     // thus to avoid it, we are delaying the service discovery start here
                     public void run() {
                         p2p.discoverServices(channel, new WifiP2pManager.ActionListener() {
+                            @Override
                             public void onSuccess() {
                                 myServiceList.clear();
                                 debug_print("Started service discovery");
                                 myServiceState = ServiceState.DiscoverService;
                             }
+
+                            @Override
                             public void onFailure(int reason) {
                                 stopDiscovery();
                                 myServiceState = ServiceState.NONE;
@@ -221,6 +231,7 @@ public class WifiServiceSearcher {
                 }, 1000);
             }
 
+            @Override
             public void onFailure(int reason) {
                 myServiceState = ServiceState.NONE;
                 debug_print("Adding service request failed, error code " + reason);
@@ -233,13 +244,18 @@ public class WifiServiceSearcher {
 
     private void stopDiscovery() {
         p2p.clearServiceRequests(channel, new WifiP2pManager.ActionListener() {
+            @Override
             public void onSuccess() {debug_print("Cleared service requests");}
+
+            @Override
             public void onFailure(int reason) {debug_print("Clearing service requests failed, error code " + reason);}
         });
     }
+
     private void debug_print(String buffer) {
         Log.i("Service searcher", buffer);
     }
+
     private class ServiceSearcherReceiver extends BroadcastReceiver {
 
         @Override
