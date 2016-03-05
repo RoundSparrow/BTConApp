@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -484,6 +485,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
     }
 
     private TextView statusBox;
+    private int COLOR_BACKGROUD_CONNECTING = Color.parseColor("#EF5350");
 
     @Override
     public void StateChanged(BTConnector.State newState) {
@@ -491,26 +493,26 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         statusBox.setText("State: " + newState);
         switch(newState){
             case Idle:
-                ((TextView) findViewById(R.id.statusBox)).setBackgroundColor(0xff444444); //dark Gray
+                statusBox.setBackgroundColor(0xff444444); //dark Gray
                 break;
             case NotInitialized:
-                ((TextView) findViewById(R.id.statusBox)).setBackgroundColor(0xffcccccc); //light Gray
+                statusBox.setBackgroundColor(0xffcccccc); //light Gray
                 break;
             case WaitingStateChange:
-                ((TextView) findViewById(R.id.statusBox)).setBackgroundColor(0xffEE82EE); // pink
+                statusBox.setBackgroundColor(0xffEE82EE); // pink
                 break;
             case FindingPeers:
-                ((TextView) findViewById(R.id.statusBox)).setBackgroundColor(0xff00ffff); // Cyan
+                statusBox.setBackgroundColor(0xff00ffff); // Cyan
                 break;
             case FindingServices:
-                ((TextView) findViewById(R.id.statusBox)).setBackgroundColor(0xffffff00); // yellow
-                if(mTestDataFile != null) {
+                statusBox.setBackgroundColor(0xffffff00); // yellow
+                if (mTestDataFile != null) {
                     mTestDataFile.SetTimeNow(TestDataFile.TimeForState.FoundPeers);
                 }
                 break;
             case Connecting: {
-                    ((TextView) findViewById(R.id.statusBox)).setBackgroundColor(0xffff0000); // red
-                    ConAttemptCounter = ConAttemptCounter + 1;
+                statusBox.setBackgroundColor(COLOR_BACKGROUD_CONNECTING);  // red Material Design #EF5350, previous was 0xffff0000
+                ConAttemptCounter = ConAttemptCounter + 1;
                     ((TextView) findViewById(R.id.conaCount)).setText("" + ConAttemptCounter);
                     if (mTestDataFile != null) {
                         mTestDataFile.SetTimeNow(TestDataFile.TimeForState.Connecting);
@@ -520,7 +522,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                 }
                 break;
             case Connected: {
-                    ((TextView) findViewById(R.id.statusBox)).setBackgroundColor(0xff00ff00); // green
+                statusBox.setBackgroundColor(0xff00ff00); // green
                     ConnectionCounter = ConnectionCounter + 1;
                     ((TextView) findViewById(R.id.conCount)).setText("" + ConnectionCounter);
                     if (mTestDataFile != null) {
