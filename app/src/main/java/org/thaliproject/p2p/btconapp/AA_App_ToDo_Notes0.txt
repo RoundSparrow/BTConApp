@@ -1,0 +1,3 @@
+Notes, basically a ToDo list:
+
+1. The receiver on a Bluetooth transfer does not confirm that both devices have the same setting on the amount of data being sent in the test.

@@ -52,6 +52,7 @@ public class BTConnectedThread extends Thread {
         Log.d(TAG, "Created BTConnectedThread " + Thread.currentThread());
     }
 
+    @Override
     public void run() {
         Log.i(TAG, "BTConnectedThread started " + Thread.currentThread());
         byte[] buffer = new byte[bufferSizeDesired];
@@ -81,7 +82,7 @@ public class BTConnectedThread extends Thread {
 
     /**
      * Write to the connected OutStream.
-     * @param buffer The bytes to write
+     * the buffer should be set by caller before this method is called
      */
     public void write() {
         try {

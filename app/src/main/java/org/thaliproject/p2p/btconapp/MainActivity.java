@@ -47,12 +47,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
     final MainActivity that = this;
 
-    /*
-        For End-to-End testing we can use timer here to Stop the process
-        for example after 1 minute.
-        The value is determined by mExitWithDelay
-        */
-
+    private SharedPreferences preferences;
     private ApplicationSettings appSettings = new ApplicationSettings();
 
     private TextView outputInfoText0;
@@ -155,7 +150,6 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         }
     };
 
-    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         statusBox = ((TextView) findViewById(R.id.statusBox));
         transferCountBox = ((TextView) findViewById(R.id.transferCountBox));
 
-        setBluetoothDataSizeIndexTo(preferences.getInt(PREF_KEY_BLUETOOTH_DATA_SIZE_INDEX, PREF_DEFAULT_BLUETOOTH_DATA_SIZE_INDEX));
+        appSettings.setBluetoothDataSizeIndexTo(preferences.getInt(PREF_KEY_BLUETOOTH_DATA_SIZE_INDEX, PREF_DEFAULT_BLUETOOTH_DATA_SIZE_INDEX));
 
         mTestDataFile = new TestDataFile(this);
         mTestDataFile.StartNewFile();
@@ -287,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 preferences.edit().putInt(PREF_KEY_BLUETOOTH_DATA_SIZE_INDEX, position).commit();
-                setBluetoothDataSizeIndexTo(position);
+                appSettings.setBluetoothDataSizeIndexTo(position);
             }
 
             @Override
@@ -311,38 +305,6 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         }
     }
 
-    public void setBluetoothDataSizeIndexTo(int zeroToFour)
-    {
-        switch (zeroToFour)
-        {
-            case 0:
-                appSettings.BUFFER_SIZE_XFER0 = 1024 * 512;
-                appSettings.receiveTimeMaximum = 20L * 1000L;
-                appSettings.dataTestSizeWord = "half megabyte";
-                break;
-            case 1:
-                appSettings.BUFFER_SIZE_XFER0 = 1024 * 512 * 2;
-                appSettings.receiveTimeMaximum = 35L * 1000L;
-                appSettings.dataTestSizeWord = "megabyte";
-                break;
-            case 2:
-                appSettings.BUFFER_SIZE_XFER0 = 1024 * 512 * 4;
-                appSettings.receiveTimeMaximum = 55L * 1000L;
-                appSettings.dataTestSizeWord = "two megabytes";
-                break;
-            case 3:
-                appSettings.BUFFER_SIZE_XFER0 = 1024 * 512 * 8;
-                appSettings.receiveTimeMaximum = 100L * 1000L;
-                appSettings.dataTestSizeWord = "four megabytes";
-                break;
-            case 4:
-                appSettings.BUFFER_SIZE_XFER0 = 1024 * 512 * 16;
-                appSettings.receiveTimeMaximum = 140L * 1000L;
-                appSettings.dataTestSizeWord = "eight megabytes";
-                break;
-        }
-        Log.d("MainActivity", "Bluetooth data transfer set to bytes: " + appSettings.BUFFER_SIZE_XFER0 + " timeout: " + appSettings.receiveTimeMaximum);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -406,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
     private void sayItWithBigBuffer() {
         if (mBTConnectedThread != null) {
             // ToDo: This is performance problem of allocating on the main thread here?
-            byte[] buffer = new byte[appSettings.BUFFER_SIZE_XFER0]; //Megabyte buffer
+            byte[] buffer = new byte[appSettings.bluetoothXFerBufferSize]; //Megabyte buffer
             new Random().nextBytes(buffer);
             print_line("CHAT", "sayItWithBigBuffer");
             mBTConnectedThread.setBufferContent(buffer);
@@ -429,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                         timeCounter = 0;
                         wroteDataAmount = wroteDataAmount + msg.arg1;
                         transferCountBox.setText("" + wroteDataAmount);
-                        if (wroteDataAmount == appSettings.BUFFER_SIZE_XFER0) {
+                        if (wroteDataAmount == appSettings.bluetoothXFerBufferSize) {
                             if (mTestDataFile != null) {
                                 // lets do saving after we got ack received
                                 //sendMessageCounter = sendMessageCounter+ 1;
@@ -465,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                         transferCountBox.setText("" + gotDataAmount);
                         BigBufferReceivingTimeOut.cancel();
                         BigBufferReceivingTimeOut.start();
-                        if (gotDataAmount == appSettings.BUFFER_SIZE_XFER0) {
+                        if (gotDataAmount == appSettings.bluetoothXFerBufferSize) {
                             BigBufferReceivingTimeOut.cancel();
 
                             gotFirstMessage = false;
@@ -568,7 +530,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         wroteDataAmount = 0;
         gotDataAmount = 0;
 
-        mBTConnectedThread = new BTConnectedThread(socket, bluetoothChatReturnHandler, appSettings.BUFFER_SIZE_XFER0);
+        mBTConnectedThread = new BTConnectedThread(socket, bluetoothChatReturnHandler, appSettings.bluetoothXFerBufferSize);
         mBTConnectedThread.start();
 
         if(!amIBigSender) {
