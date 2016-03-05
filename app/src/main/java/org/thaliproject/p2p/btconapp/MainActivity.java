@@ -336,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                         if (amIBigSender) {
                             timeCounter = 0;
                             wroteDataAmount = wroteDataAmount + msg.arg1;
-                            ((TextView) findViewById(R.id.CountBox)).setText("" + wroteDataAmount);
+                            setTextBoxOffThread(R.id.CountBox, "" + wroteDataAmount);
                             if (wroteDataAmount == appSettings.BUFFER_SIZE_XFER0) {
                                 if (mTestDataFile != null) {
                                     // lets do saving after we got ack received
@@ -370,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                         if (!amIBigSender) {
                             gotDataAmount = gotDataAmount + msg.arg1;
                             timeCounter = 0;
-                            ((TextView) findViewById(R.id.CountBox)).setText("" + gotDataAmount);
+                            setTextBoxOffThread(R.id.CountBox, "" + gotDataAmount);
                             BigBufferReceivingTimeOut.cancel();
                             BigBufferReceivingTimeOut.start();
                             if (gotDataAmount == appSettings.BUFFER_SIZE_XFER0) {
@@ -378,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
                                 gotFirstMessage = false;
                                 gotMessageCounter = gotMessageCounter + 1;
-                                ((TextView) findViewById(R.id.msgGotCount)).setText("" + gotMessageCounter);
+                                setTextBoxOffThread(R.id.msgGotCount, "" + gotMessageCounter);
 
                                 if (mTestDataFile != null) {
                                     mTestDataFile.SetTimeNow(TestDataFile.TimeForState.GoBigtData);
@@ -400,10 +400,10 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                             print_line("CHAT", "we got Ack message back, so lets disconnect.");
 
                             //got message
-                            ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xff00ff00); // green
+                            setTextBoxOffThreadBGColor(R.id.dataStatusBox, 0xff00ff00); // green
 
                             sendMessageCounter = sendMessageCounter + 1;
-                            ((TextView) findViewById(R.id.msgSendCount)).setText("" + sendMessageCounter);
+                            setTextBoxOffThread(R.id.msgSendCount, "" + sendMessageCounter);
                             if (mTestDataFile != null) {
                                 mTestDataFile.WriteDebugline("BigSender");
                             }
@@ -433,14 +433,14 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                             gotFirstMessage = true;
                             print_line("CHAT", "Got message: " + readMessage);
                             if (amIBigSender) {
-                                ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xff0000ff); //Blue
+                                setTextBoxOffThreadBGColor(R.id.dataStatusBox, 0xff0000ff); //Blue
                                 sayItWithBigBuffer();
                             }
                         }
                         break;
                     case BTConnectedThread.SOCKET_DISCONNEDTED: {
 
-                        ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xffcccccc); //light Gray
+                        setTextBoxOffThreadBGColor(R.id.dataStatusBox, 0xffcccccc); //light Gray
 
                         if (mBTConnectedThread != null) {
                             mBTConnectedThread.Stop();
@@ -457,6 +457,20 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                 android.util.Log.i("MAIN", "END mHandler " + msg.what + " Thread " + Thread.currentThread() + " elapsed: " + (System.currentTimeMillis() - handlerStartWhen));
             }
         };
+    }
+
+    private void setTextBoxOffThreadBGColor(int dataStatusBox, int colorInt) {
+        findViewById(dataStatusBox).setBackgroundColor(colorInt);
+    }
+
+    private void setTextBoxOffThread(final int textBoxId, final String textToSet)
+    {
+        outputInfoText0.post(new Runnable() {
+            @Override
+            public void run() {
+                ((TextView) findViewById(textBoxId)).setText(textToSet);
+            }
+        });
     }
 
     public void startChat(BluetoothSocket socket, boolean incoming) {
