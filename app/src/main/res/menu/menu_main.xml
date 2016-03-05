@@ -20,4 +20,12 @@
         android:checked="true"
         app:showAsAction="never"/>
 
+    <!-- the combination of ifRoom|collapseActioNView seems to magically work where "never" does not work -->
+    <item android:id="@+id/action_volume_spinner0"
+          android:orderInCategory="50"
+          android:title="@string/action_volume_spinner0"
+          app:showAsAction="ifRoom|collapseActionView"
+          app:actionViewClass="android.widget.Spinner"
+          />
+
 </menu>

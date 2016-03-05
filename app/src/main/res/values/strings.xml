@@ -7,5 +7,6 @@
     <string name="action_settings">Settings</string>
     <string name="action_force_screen_on">Force Screen On</string>
     <string name="action_bluetooth_transfers_on">Bluetooth XFers</string>
+    <string name="action_volume_spinner0">Volume</string>
 
 </resources>

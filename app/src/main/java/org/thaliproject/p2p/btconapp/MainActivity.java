@@ -20,7 +20,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import org.thaliproject.p2p.btconnectorlib.BTConnector;
@@ -34,6 +38,8 @@ import java.util.UUID;
 
 
 public class MainActivity extends AppCompatActivity implements BTConnector.Callback, BTConnector.ConnectSelector {
+
+    private static final String PREF_KEY_VOLUMELEVEL = "volumeLevel";
 
     final MainActivity that = this;
 
@@ -215,13 +221,13 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         public void run() {
             // ToDo: Settings / Shared Preferences slider
             if (mySpeech.isReady) {
-                mySpeech.setVolumeLevel("0.5");
-                mySpeech.speak("Volume reduced");
+                setSpeechVolumeLevelTo(preferences.getInt(PREF_KEY_VOLUMELEVEL, 7));
             }
             else
             {
+                // Loop back every 1 second until it is ready.
                 timeHandler.postDelayed(speakVolumeChange, 1000L);
-             }
+            }
         }
     };
 
@@ -249,7 +255,36 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         getMenuInflater().inflate(R.menu.menu_main, menu);
         menuItem_action_force_screen_on = menu.findItem(R.id.action_force_screen_on);
         menuItem_action_force_screen_on.setChecked(preferences.getBoolean("PREF_KEY_SCREEN_ON", false));
+
+        MenuItem actionVolumeItem0 = menu.findItem(R.id.action_volume_spinner0);
+        Spinner actionVolumeSpinner0 = (Spinner) actionVolumeItem0.getActionView();
+        SpinnerAdapter spinnerVolumeLevelsAdapter = ArrayAdapter.createFromResource(getSupportActionBar().getThemedContext(), R.array.volume_levels, android.R.layout.simple_spinner_dropdown_item);
+        actionVolumeSpinner0.setAdapter(spinnerVolumeLevelsAdapter);
+        actionVolumeSpinner0.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                preferences.edit().putInt(PREF_KEY_VOLUMELEVEL, position).commit();
+                setSpeechVolumeLevelTo(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        }); // set the listener, to perform actions based on item selection
+
         return true;
+    }
+
+    public void setSpeechVolumeLevelTo(int zeroToTen)
+    {
+        if (mySpeech.isReady) {
+            String positionToString = "0." + zeroToTen;
+            if (zeroToTen == 10)
+                positionToString = "1.0";
+            Log.d("MainActivity", "Volume string: " + positionToString + " zeroToTen: " + zeroToTen);
+            mySpeech.setVolumeLevel(positionToString);
+            mySpeech.speak("Volume set");
+        }
     }
 
     @Override
