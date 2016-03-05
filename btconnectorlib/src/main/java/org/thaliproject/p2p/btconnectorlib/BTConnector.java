@@ -66,9 +66,12 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
     private Handler mHandler = null;
 
     final CountDownTimer ServiceFoundTimeOutTimer = new CountDownTimer(600000, 1000) {
+        @Override
         public void onTick(long millisUntilFinished) {
             // not using
         }
+
+        @Override
         public void onFinish() {
             startAll();
         }
@@ -139,12 +142,22 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
     private void startServices() {
 
         stopServices();
+        String myBluetoothMACAddress = mBluetoothBase.getAddress();
+        if (myBluetoothMACAddress.equals("02:00:00:00:00:00"))
+        {
+            // Workaround, expect this to fail on Android N, but works on Android M
+            // refereence: http://stackoverflow.com/questions/33377982/get-bluetooth-local-mac-address-in-marshmallow
+            myBluetoothMACAddress =  android.provider.Settings.Secure.getString(context.getContentResolver(), "bluetooth_address");
+        }
+        Log.i("BTConnector", "I am sending my Bluetooth MAC Address as: " + myBluetoothMACAddress);
+
         String advertLine = "";
 
+// ToDo: add RNG seeding fix for Android
         if (mBluetoothBase != null) {
             if(mAESCrypt != null){
                 try {
-                    advertLine = mAESCrypt.encrypt(mBluetoothBase.getAddress());
+                    advertLine = mAESCrypt.encrypt(myBluetoothMACAddress);
                 }catch (Exception e){
                     print_line("", "mAESCrypt.encrypt failed: " + e.toString());
                 }
@@ -434,7 +447,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
                     }
                 }
 
-                print_line("", "Selected device address: " + AddressLine +  ", from: " + selItem.instanceName);
+                print_line("", "Selected device address: " + AddressLine +  ", from (encrypted): " + selItem.instanceName);
 
                 BluetoothDevice device = mBluetoothBase.getRemoteDevice(AddressLine);
 
@@ -464,6 +477,6 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
     }
 
     public void print_line(String who, String line) {
-        Log.i("BTConnector" + who, line);
+        Log.i("BTConnector " + who, line);
     }
 }

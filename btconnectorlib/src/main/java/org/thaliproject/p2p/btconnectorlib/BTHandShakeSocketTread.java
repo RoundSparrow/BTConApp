@@ -15,9 +15,9 @@ import java.io.OutputStream;
 
 public class BTHandShakeSocketTread extends Thread {
 
-    public static final int MESSAGE_READ         = 0x11;
-    public static final int MESSAGE_WRITE        = 0x22;
-    public static final int SOCKET_DISCONNEDTED  = 0x33;
+    public static final int MESSAGE_READ         = 1;
+    public static final int MESSAGE_WRITE        = 2;
+    public static final int SOCKET_DISCONNECTED  = 3;
 
     private BluetoothSocket mmSocket;
     private InputStream mmInStream;
@@ -45,6 +45,8 @@ public class BTHandShakeSocketTread extends Thread {
         mmInStream = tmpIn;
         mmOutStream = tmpOut;
     }
+
+    @Override
     public void run() {
         Log.i(TAG, "BTHandShakeSocketTread started");
         byte[] buffer = new byte[100];
@@ -56,10 +58,11 @@ public class BTHandShakeSocketTread extends Thread {
             mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
         } catch (IOException e) {
             Log.e(TAG, "BTHandShakeSocketTread disconnected: ", e);
-            mHandler.obtainMessage(SOCKET_DISCONNEDTED, -1, -1, e).sendToTarget();
+            mHandler.obtainMessage(SOCKET_DISCONNECTED, -1, -1, e).sendToTarget();
         }
         Log.i(TAG, "BTHandShakeSocketTread fully stopped");
     }
+
     /**
      * Write to the connected OutStream.
      * @param buffer The bytes to write
@@ -91,6 +94,5 @@ public class BTHandShakeSocketTread extends Thread {
             try {mmSocket.close();} catch (Exception e) {}
             mmSocket = null;
         }
-
     }
 }

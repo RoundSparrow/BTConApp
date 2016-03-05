@@ -23,9 +23,12 @@ public class BTHandShaker {
     BTHandShakeSocketTread mBTHandShakeSocketTread = null;
 
     final CountDownTimer HandShakeTimeOutTimer = new CountDownTimer(4000, 1000) {
+        @Override
         public void onTick(long millisUntilFinished) {
             // not using
         }
+
+        @Override
         public void onFinish() {
             callback.HandShakeFailed("TimeOut",isIncoming);
         }
@@ -90,9 +93,9 @@ public class BTHandShaker {
                         }
                     }
                     break;
-                    case BTHandShakeSocketTread.SOCKET_DISCONNEDTED: {
+                    case BTHandShakeSocketTread.SOCKET_DISCONNECTED: {
 
-                        callback.HandShakeFailed("SOCKET_DISCONNEDTED", isIncoming);
+                        callback.HandShakeFailed("SOCKET_DISCONNECTED", isIncoming);
                     }
                     break;
                 }
