@@ -332,7 +332,8 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
             String message = "Got bytes: " + gotBytes;
             print_line("CHAT", "SayAck: " + message);
             Log.i("MainActivity", "I think the problem is we are doing a big write on Thread " + Thread.currentThread());
-            mBTConnectedThread.write(message.getBytes());
+            mBTConnectedThread.setBufferContent(message.getBytes());
+            mBTConnectedThread.write();
         }
     }
 
@@ -340,16 +341,19 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         if (mBTConnectedThread != null) {
             String message = "Hello from ";
             print_line("CHAT", "sayHi");
-            mBTConnectedThread.write(message.getBytes());
+            mBTConnectedThread.setBufferContent(message.getBytes());
+            mBTConnectedThread.write();
         }
     }
 
     private void sayItWithBigBuffer() {
         if (mBTConnectedThread != null) {
+            // ToDo: This is performance problem of allocating on the main thread here?
             byte[] buffer = new byte[appSettings.BUFFER_SIZE_XFER0]; //Megabyte buffer
             new Random().nextBytes(buffer);
             print_line("CHAT", "sayItWithBigBuffer");
-            mBTConnectedThread.write(buffer);
+            mBTConnectedThread.setBufferContent(buffer);
+            mBTConnectedThread.write();
         }
     }
 
@@ -507,7 +511,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         wroteDataAmount = 0;
         gotDataAmount = 0;
 
-        mBTConnectedThread = new BTConnectedThread(socket, bluetoothChatReturnHandler);
+        mBTConnectedThread = new BTConnectedThread(socket, bluetoothChatReturnHandler, appSettings.BUFFER_SIZE_XFER0);
         mBTConnectedThread.start();
 
         if(!amIBigSender) {

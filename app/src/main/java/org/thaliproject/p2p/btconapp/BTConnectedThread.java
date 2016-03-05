@@ -23,15 +23,18 @@ public class BTConnectedThread extends Thread {
     private InputStream mmInStream;
     private OutputStream mmOutStream;
     private final Handler callerHandler;
+    private byte[] buffer;
+    private int bufferSizeDesired = 1024;
 
     final String TAG  = "BTConnectedThread";
 
 
-    public BTConnectedThread(BluetoothSocket socket, Handler handler) {
+    public BTConnectedThread(BluetoothSocket socket, Handler handler, int bufferSizeToSet) {
         super("BTConnectedThread");
         Log.d(TAG, "Creating BTConnectedThread " + Thread.currentThread());
         callerHandler = handler;
         mmSocket = socket;
+        bufferSizeDesired = bufferSizeToSet;
 
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
@@ -51,16 +54,16 @@ public class BTConnectedThread extends Thread {
 
     public void run() {
         Log.i(TAG, "BTConnectedThread started " + Thread.currentThread());
-        byte[] buffer = new byte[ApplicationSettings.BUFFER_SIZE_XFER0];
-        int bytes;
+        byte[] buffer = new byte[bufferSizeDesired];
+        int bytesRead;
 
         while (true) {
             try {
                 if(mmInStream != null) {
                     Log.d(TAG, "Starting write on Thread " + Thread.currentThread());
-                    bytes = mmInStream.read(buffer);
+                    bytesRead = mmInStream.read(buffer);
                     //Log.d(TAG, "ConnectedThread read data: " + bytes + " bytes");
-                    callerHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                    callerHandler.obtainMessage(MESSAGE_READ, bytesRead, -1, buffer).sendToTarget();
                 }
             } catch (IOException e) {
                 Log.e(TAG, "ConnectedThread disconnected: ", e);
@@ -70,11 +73,17 @@ public class BTConnectedThread extends Thread {
         }
     }
 
+
+    public void setBufferContent(byte[] bufferToSet)
+    {
+        buffer = bufferToSet;
+    }
+
     /**
      * Write to the connected OutStream.
      * @param buffer The bytes to write
      */
-    public void write(byte[] buffer) {
+    public void write() {
         try {
             if(mmOutStream != null) {
                 Log.d(TAG, "Starting write on Thread " + Thread.currentThread());
