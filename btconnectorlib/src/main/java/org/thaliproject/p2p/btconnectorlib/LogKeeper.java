@@ -11,6 +11,7 @@ public class LogKeeper {
 	public static final int L_A_NORMAL = 0;
 	public static final int L_A_MEDIUM = 2;
 	public static final int L_A_HIGH = 3;
+	public static final int L_A_SHOW_A = 4;  // Highlight Show A
 
 	public static final int L_B_NORMAL = 0;
 

@@ -456,7 +456,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
                 stopServices();
                 setState(State.Connecting);
                 outputConnectingToDetail =  device.getName() + " @ " + device.getAddress();
-                print_line("", "Connecting to " + device.getName() + ", at " + device.getAddress());
+                LogKeeper.addLogEntry("BTC", "Connecting to " + device.getName() + " at " + device.getAddress(), LogKeeper.L_A_SHOW_A, LogKeeper.L_B_NORMAL);
             } else {
                 // we'll get discovery stopped event soon enough
                 // and it starts the discovery again, so no worries :)

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
@@ -48,6 +49,7 @@ public class LogViewActivity extends AppCompatActivity {
 
 
 	private int COLOR_BROWN = Color.parseColor("#4E342E");
+	private int COLOR_YELLOW_A = Color.parseColor("#FFF9C4");
 
 	public void showLogOnActivity()
 	{
@@ -73,13 +75,17 @@ public class LogViewActivity extends AppCompatActivity {
 				SpannableString outputSpan = new SpannableString(splitOnBracket[1]);
 				switch (splitOnBracket[0]) {
 					case "3:0":     // HIGH:NORMAL
-						outputSpan.setSpan(new ForegroundColorSpan(Color.RED),    0, splitOnBracket[1].length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						outputSpan.setSpan(new ForegroundColorSpan(Color.RED),       0, splitOnBracket[1].length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 						break;
 					case "2:0":     // MEDIUM:NORMAL
-						outputSpan.setSpan(new ForegroundColorSpan(COLOR_BROWN),  0, splitOnBracket[1].length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						outputSpan.setSpan(new ForegroundColorSpan(COLOR_BROWN),     0, splitOnBracket[1].length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						outputSpan.setSpan(new BackgroundColorSpan(COLOR_YELLOW_A),  0, splitOnBracket[1].length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						break;
+					case "4:0":    // SHOW_A:NORMAL
+						outputSpan.setSpan(new ForegroundColorSpan(Color.BLUE),      0, splitOnBracket[1].length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 						break;
 					default:
-						outputSpan.setSpan(new ForegroundColorSpan(Color.BLUE),   0, splitOnBracket[1].length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						outputSpan.setSpan(new ForegroundColorSpan(Color.BLUE),      0, splitOnBracket[1].length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 						break;
 				}
 				textViewLogViewMain0.append(outputSpan);
