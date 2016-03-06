@@ -27,19 +27,19 @@ public class WifiServiceAdvertiser {
         return lastError;
     }
 
-    public void startAdvertising(String instance, String service_type) {
+    public void startAdvertising(final String instance, String service_type) {
 
         Map<String, String> record = new HashMap<>();
         record.put("available", "visible");
 
         WifiP2pDnsSdServiceInfo service = WifiP2pDnsSdServiceInfo.newInstance(instance, service_type, record);
 
-        debug_print("Add local service :" + instance);
+        debug_print("Add local service: " + instance);
         p2p.addLocalService(channel, service, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
                 lastError = -1;
-                debug_print("Added local service");
+                LogKeeper.addLogEntry("WiFi_SA", "Advertising. Good addLocalService: " + instance, LogKeeper.L_A_MEDIUM, LogKeeper.L_B_NORMAL);
             }
 
             @Override
@@ -55,7 +55,7 @@ public class WifiServiceAdvertiser {
             @Override
             public void onSuccess() {
                 lastError = -1;
-                debug_print("Cleared local services");
+                LogKeeper.addLogEntry("WiFi_SA", "No longer Advertising. Good clearLocalServices.", LogKeeper.L_A_MEDIUM, LogKeeper.L_B_NORMAL);
             }
 
             @Override
