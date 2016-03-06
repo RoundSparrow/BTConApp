@@ -441,11 +441,11 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
                     try {
                         AddressLine = mAESCrypt.decrypt(selItem.instanceName);
                     }catch (Exception e){
-                        print_line("", "mAESCrypt.decrypt failed: " + e.toString());
+                        LogKeeper.addLogEntry("BTC", "mAESCrypt.decrypt failed: " + e.toString(), LogKeeper.L_A_HIGH, LogKeeper.L_B_NORMAL);
                     }
                 }
 
-                print_line("", "Selected device address: " + AddressLine +  ", from (encrypted): " + selItem.instanceName);
+                LogKeeper.addLogEntry("BTC", "Selected device address: " + AddressLine + ", from (encrypted): " + selItem.instanceName, LogKeeper.L_A_SHOW_A, LogKeeper.L_B_NORMAL);
 
                 BluetoothDevice device = mBluetoothBase.getRemoteDevice(AddressLine);
 

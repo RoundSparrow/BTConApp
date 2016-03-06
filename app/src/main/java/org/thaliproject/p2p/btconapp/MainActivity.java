@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                     mBTConnectedThread.stopConnection();
                     mBTConnectedThread = null;
                 }
-                print_line("CHAT", "We got timeout on receiving data, lets Disconnect.");
+                priintOnScreen("CHAT", "We got timeout on receiving data, lets Disconnect.");
 
                 ConCancelCounter = ConCancelCounter + 1;
                 ((TextView) findViewById(R.id.cancelCount)).setText("" + ConCancelCounter);
@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
             @Override
             public void onClick(View v) {
                 appSettings.mExitWithDelayIsOn = false;
-                print_line("Debug","Exit with delay is set OFF");
+                priintOnScreen("Debug", "Exit with delay is set OFF");
                 if(mBTConnector != null){
                     mBTConnector.stop();
                     mBTConnector = null;
@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
     private void SayAck(long gotBytes) {
         if (mBTConnectedThread != null) {
             String message = "Got bytes: " + gotBytes;
-            print_line("CHAT", "SayAck: " + message);
+            priintOnScreen("CHAT", "SayAck: " + message);
             Log.i("MainActivity", "I think the problem is we are doing a big write on Thread " + Thread.currentThread());
             mBTConnectedThread.setBufferContent(message.getBytes());
             mBTConnectedThread.write();
@@ -362,7 +362,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
     private void sayHi() {
         if (mBTConnectedThread != null) {
             String message = "Hello from ";
-            print_line("CHAT", "sayHi");
+            priintOnScreen("CHAT", "sayHi");
             mBTConnectedThread.setBufferContent(message.getBytes());
             mBTConnectedThread.write();
         }
@@ -373,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
             // ToDo: This is performance problem of allocating on the main thread here?
             byte[] buffer = new byte[appSettings.bluetoothXFerBufferSize]; //Megabyte buffer
             new Random().nextBytes(buffer);
-            print_line("CHAT", "sayItWithBigBuffer");
+            priintOnScreen("CHAT", "sayItWithBigBuffer");
             mBTConnectedThread.setBufferContent(buffer);
             mBTConnectedThread.write();
         }
@@ -407,7 +407,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                                 // lets do saving after we got ack received
                                 //mTestDataFile.WriteDebugline("BigSender");
 
-                                print_line("CHAT", sayoutloud);
+                                priintOnScreen("CHAT", sayoutloud);
                                 mySpeech.speak(sayoutloud);
                             }
                         }
@@ -420,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
                         wroteDataAmount = 0;
                         wroteFirstMessage = true;
-                        print_line("CHAT", "Wrote: " + writeMessage);
+                        priintOnScreen("CHAT", "Wrote: " + writeMessage);
                     }
                     break;
                 case BTConnectedThread.MESSAGE_READ:
@@ -445,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
                                 mTestDataFile.WriteDebugline("Receiver");
 
-                                print_line("CHAT", sayoutloud);
+                                priintOnScreen("CHAT", sayoutloud);
                                 mySpeech.speak(sayoutloud);
                             }
 
@@ -454,7 +454,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                             SayAck(gotDataAmount);
                         }
                     } else if(gotFirstMessage) {
-                        print_line("CHAT", "we got Ack message back, so lets disconnect.");
+                        priintOnScreen("CHAT", "we got Ack message back, so lets disconnect.");
 
                         //got message
                         ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xff00ff00); // green
@@ -488,7 +488,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                         }
 
                         gotFirstMessage = true;
-                        print_line("CHAT", "Got message: " + readMessage);
+                        priintOnScreen("CHAT", "Got message: " + readMessage);
                         if (amIBigSender) {
                             ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xff0000ff); //Blue
                             sayItWithBigBuffer();
@@ -503,7 +503,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                         mBTConnectedThread.stopConnection();
                         mBTConnectedThread = null;
                     }
-                    print_line("CHAT", "WE are Disconnected now.");
+                    priintOnScreen("CHAT", "WE are Disconnected now.");
                     //Re-start the loop
                     if(mBTConnector != null) {
                         mBTConnector.start();
@@ -545,7 +545,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         }
     }
 
-    public void print_line(String who, String line) {
+    public void priintOnScreen(String who, String line) {
         Log.i("BtTestMaa" + who, line);
         outputInfoText0.append(who);
         outputInfoText0.append(": ");
@@ -564,12 +564,13 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
     private TextView statusBox;
     private int COLOR_BACKGROUD_CONNECTING = Color.parseColor("#EF9A9A");
+    private BTConnector.State onState = BTConnector.State.NotInitialized;
 
     @Override
     public void StateChanged(BTConnector.State newState) {
 
         statusBox.setText("State: " + newState);
-        switch(newState){
+        switch (newState) {
             case Idle:
                 statusBox.setBackgroundColor(0xff444444); //dark Gray
                 break;
@@ -610,7 +611,14 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                 break;
         }
 
-        print_line("STATE", "New state: " + newState);
+        if (newState != onState) {
+            onState = newState;
+            priintOnScreen("STATE", "New state: " + newState);
+        }
+        else
+        {
+            priintOnScreen("STATE", "New state: " + newState + " (dupe)");
+        }
     }
 
     @Override
@@ -650,7 +658,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                 connectedArray.remove(firstOldMatch);
             }
 
-            //print_line("EEE", "firstNewMatch " + firstNewMatch + ", firstOldMatch: " + firstOldMatch);
+            //priintOnScreen("EEE", "firstNewMatch " + firstNewMatch + ", firstOldMatch: " + firstOldMatch);
 
         }else if(available.size() > 0){
             ret = available.get(0);
