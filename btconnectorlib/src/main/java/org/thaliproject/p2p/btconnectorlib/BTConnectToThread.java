@@ -48,7 +48,7 @@ public class BTConnectToThread extends Thread {
 
     private void print_line(String message){
         // Log.d("BTConnectToThread",  "BTConnectToThread: " + message);
-        LogKeeper.addLogEntry("BT_CT", message, 0, 0);
+        LogKeeper.addLogEntry("BT_CT", message, LogKeeper.L_A_NORMAL, LogKeeper.L_B_NORMAL);
     }
 
     public void stopBluetooth() {

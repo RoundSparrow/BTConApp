@@ -406,7 +406,7 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
         int numm = 0;
         for (WifiP2pDevice peer : list) {
             numm++;
-            print_line("SS","Peer(" + numm + "): " + peer.deviceName + " " + peer.deviceAddress);
+            LogKeeper.addLogEntry("SS", "Peer(" + numm + "): " + peer.deviceName + " " + peer.deviceAddress, LogKeeper.L_A_HIGH, LogKeeper.L_B_NORMAL);
         }
 
         setState(State.FindingServices);
@@ -476,6 +476,6 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
 
     public void print_line(String who, String line) {
         Log.i("BTConnector " + who, line);
-        LogKeeper.addLogEntry(who, line, 0, 0);
+        LogKeeper.addLogEntry(who, line, LogKeeper.L_A_NORMAL, LogKeeper.L_B_NORMAL);
     }
 }

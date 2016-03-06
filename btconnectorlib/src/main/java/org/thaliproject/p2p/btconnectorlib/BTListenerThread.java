@@ -68,7 +68,7 @@ public class BTListenerThread extends Thread {
 
     private void printe_line(String message){
         Log.d(TAG,  "BTListenerThread: " + message);
-        LogKeeper.addLogEntry(TAG, message, 0, 0);
+        LogKeeper.addLogEntry(TAG, message, LogKeeper.L_A_NORMAL, LogKeeper.L_B_NORMAL);
     }
 
     public void stopListening() {

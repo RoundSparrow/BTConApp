@@ -144,7 +144,7 @@ public class WifiBase implements WifiP2pManager.ChannelListener {
 
     private void debug_print(String output) {
         Log.i("Service searcher", output);
-        LogKeeper.addLogEntry("WiFiBase", output, 0, 0);
+        LogKeeper.addLogEntry("WiFiBase", output, LogKeeper.L_A_NORMAL, LogKeeper.L_B_NORMAL);
     }
 
     private class MainBCReceiver extends BroadcastReceiver {

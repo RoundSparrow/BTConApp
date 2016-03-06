@@ -131,7 +131,7 @@ public class WifiServiceSearcher {
             @Override
             public void onDnsSdServiceAvailable(String instanceName, String serviceType, WifiP2pDevice device) {
 
-                debug_print("Found Service, :" + instanceName + ", type" + serviceType + ":");
+                LogKeeper.addLogEntry("WSS_", "Found Service: " + instanceName + " type: " + serviceType, LogKeeper.L_A_HIGH, LogKeeper.L_B_NORMAL);
 
                 if (serviceType.startsWith(SERVICE_TYPE)) {
                     boolean addService = true;
@@ -145,7 +145,7 @@ public class WifiServiceSearcher {
                     }
 
                 } else {
-                    debug_print("Not our Service, :" + SERVICE_TYPE + "!=" + serviceType + ":");
+                    debug_print("Not our Service: " + SERVICE_TYPE + "!=" + serviceType);
                 }
 
                 ServiceDiscoveryTimeOutTimer.cancel();
@@ -257,7 +257,7 @@ public class WifiServiceSearcher {
 
     private void debug_print(String output) {
         Log.i("WiFiServiceSearcher", output);
-        LogKeeper.addLogEntry("WiFi_SS", output, 0, 0);
+        LogKeeper.addLogEntry("WiFi_SS", output, LogKeeper.L_A_NORMAL, LogKeeper.L_B_NORMAL);
     }
 
     private class ServiceSearcherReceiver extends BroadcastReceiver {

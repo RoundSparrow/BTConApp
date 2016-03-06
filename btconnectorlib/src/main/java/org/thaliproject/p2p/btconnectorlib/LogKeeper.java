@@ -8,6 +8,12 @@ import java.util.ArrayList;
  * Copyright 2016 Stephen A Gutknecht, All Rights Reserved.
 */
 public class LogKeeper {
+	public static final int L_A_NORMAL = 0;
+	public static final int L_A_MEDIUM = 2;
+	public static final int L_A_HIGH = 3;
+
+	public static final int L_B_NORMAL = 0;
+
 	private static boolean isEnabled = true;
 	private static ArrayList<String> logHolder = new ArrayList<>();
 	private static long timeRefWhen = System.currentTimeMillis();
@@ -21,7 +27,7 @@ public class LogKeeper {
 		}
 		else
 		{
-			logHolder.add("[" + (System.currentTimeMillis() - timeRefWhen) + "] " + who + ": " + content);
+			logHolder.add(levelA + ":" + levelB + "[" + (System.currentTimeMillis() - timeRefWhen) + "] " + who + ": " + content);
 			if (logHolder.size() > MAXIMUM_LOG_SIZE)
 			{
 				logHolder.remove(0);

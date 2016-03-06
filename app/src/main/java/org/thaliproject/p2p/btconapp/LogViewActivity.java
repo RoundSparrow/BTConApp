@@ -1,10 +1,15 @@
 package org.thaliproject.p2p.btconapp;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -41,6 +46,9 @@ public class LogViewActivity extends AppCompatActivity {
 		showLogOnActivity();
 	}
 
+
+	private int COLOR_BROWN = Color.parseColor("#4E342E");
+
 	public void showLogOnActivity()
 	{
 		textViewLogViewMain0.setText("");
@@ -48,9 +56,35 @@ public class LogViewActivity extends AppCompatActivity {
 		ArrayList<String> copyOfItems = new ArrayList<String>();
 		copyOfItems.addAll(LogKeeper.getLog());
 
+		/*
+		Thoughts on performance is that this Activity is rarely used and we can do some inefficient things.
+		 */
 		for (int i = 0; i < copyOfItems.size(); i++) {
+			String rawLine = copyOfItems.get(i);
+			String splitOnBracket[] = rawLine.split("\\[", 2);
+
 			textViewLogViewMain0.append(i + ": ");
-			textViewLogViewMain0.append(copyOfItems.get(i));
+
+			if (splitOnBracket[0].equals("0:0")) {
+				textViewLogViewMain0.append(splitOnBracket[1]);
+			}
+			else {
+				Log.i("LVA", "pattern " + splitOnBracket[0]);
+				SpannableString outputSpan = new SpannableString(splitOnBracket[1]);
+				switch (splitOnBracket[0]) {
+					case "3:0":     // HIGH:NORMAL
+						outputSpan.setSpan(new ForegroundColorSpan(Color.RED),    0, splitOnBracket[1].length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						break;
+					case "2:0":     // MEDIUM:NORMAL
+						outputSpan.setSpan(new ForegroundColorSpan(COLOR_BROWN),  0, splitOnBracket[1].length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						break;
+					default:
+						outputSpan.setSpan(new ForegroundColorSpan(Color.BLUE),   0, splitOnBracket[1].length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+						break;
+				}
+				textViewLogViewMain0.append(outputSpan);
+			}
+
 			textViewLogViewMain0.append("\n");
 		}
 		// toss an extra newline on for easier of reading

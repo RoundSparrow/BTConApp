@@ -69,7 +69,7 @@ public class BTHandShaker {
 
     private void print_line(String message){
         Log.d("BTHandShaker",  "BTHandShaker: " + message);
-        LogKeeper.addLogEntry("BT_HS", message, 0, 0);
+        LogKeeper.addLogEntry("BT_HS", message, LogKeeper.L_A_NORMAL, LogKeeper.L_B_NORMAL);
     }
 
     // The Handler that gets information back from the BluetoothChatService
@@ -79,7 +79,7 @@ public class BTHandShaker {
             if (mBTHandShakeSocketTread != null) {
                 switch (msg.what) {
                     case BTHandShakeSocketThread.MESSAGE_WRITE: {
-                        print_line("MESSAGE_WRITE " + msg.arg1 + " bytes.");
+                        LogKeeper.addLogEntry("BT_HS", "MESSAGE_WRITE " + msg.arg1 + " bytes.", LogKeeper.L_A_MEDIUM, LogKeeper.L_B_NORMAL);
                         if (isIncoming) {
                             callback.HandShakeOk(mmSocket, isIncoming);
                         }
