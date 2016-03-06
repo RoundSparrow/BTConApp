@@ -454,7 +454,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                             SayAck(gotDataAmount);
                         }
                     } else if(gotFirstMessage) {
-                        priintOnScreen("CHAT", "we got Ack message back, so lets disconnect.");
+                        priintOnScreen("CHAT", "we got Ack message back, so let's disconnect.");
 
                         //got message
                         ((TextView) findViewById(R.id.dataStatusBox)).setBackgroundColor(0xff00ff00); // green
@@ -464,23 +464,23 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                         if (mTestDataFile != null) {
                             mTestDataFile.WriteDebugline("BigSender");
                         }
-                        // we got Ack message back, so lets disconnect
+                        // we got Ack message back, so let's disconnect
                         final Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             //There are supposedly a possible race-condition bug with the service discovery
                             // thus to avoid it, we are delaying the service discovery start here
                             public void run() {
-                                if(mBTConnectedThread != null){
+                                if (mBTConnectedThread != null) {
                                     mBTConnectedThread.stopConnection();
                                     mBTConnectedThread = null;
                                 }
                                 //Re-start the loop
-                                if(mBTConnector != null) {
+                                if (mBTConnector != null) {
                                     mBTConnector.start();
                                 }
                             }
-                        }, 1000);
-                    }else{
+                        }, 1000L);
+                    } else {
                         byte[] readBuf = (byte[]) msg.obj;// construct a string from the valid bytes in the buffer
                         String readMessage = new String(readBuf, 0, msg.arg1);
                         if (mTestDataFile != null) {
@@ -505,7 +505,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
                     }
                     priintOnScreen("CHAT", "WE are Disconnected now.");
                     //Re-start the loop
-                    if(mBTConnector != null) {
+                    if (mBTConnector != null) {
                         mBTConnector.start();
                     }
                 }
@@ -523,7 +523,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
             mBTConnectedThread = null;
         }
 
-        if(socket != null && socket.getRemoteDevice() != null) {
+        if (socket != null && socket.getRemoteDevice() != null) {
             ((TextView) findViewById(R.id.remoteHost)).setText("Last RH: " + socket.getRemoteDevice().getName());
             mySpeech.speak("Connected to " + socket.getRemoteDevice().getName());
         }
@@ -536,7 +536,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         mBTConnectedThread = new BTConnectedThread(socket, bluetoothChatReturnHandler, appSettings.bluetoothXFerBufferSize);
         mBTConnectedThread.start();
 
-        if(!amIBigSender) {
+        if (!amIBigSender) {
             // we'll start the cancel timer in here
             receivingTimeOutBaseTime = System.currentTimeMillis();
             // will be waiting for big buffer
@@ -625,18 +625,18 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
     public ServiceItem SelectServiceToConnect(List<ServiceItem> available) {
         ServiceItem  ret = null;
 
-        if(connectedArray.size() > 0 && available.size() > 0) {
+        if (connectedArray.size() > 0 && available.size() > 0) {
 
             int firstNewMatch = -1;
             int firstOldMatch = -1;
 
             for (int i = 0; i < available.size(); i++) {
-                if(firstNewMatch >= 0) {
+                if (firstNewMatch >= 0) {
                     break;
                 }
                 for (int ii = 0; ii < connectedArray.size(); ii++) {
                     if (available.get(i).deviceAddress.equals(connectedArray.get(ii).deviceAddress)) {
-                        if(firstOldMatch < 0 || firstOldMatch > ii){
+                        if (firstOldMatch < 0 || firstOldMatch > ii) {
                             //find oldest one available that we have connected previously
                             firstOldMatch = ii;
                         }
@@ -652,7 +652,7 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
             if (firstNewMatch >= 0){
                 ret = available.get(firstNewMatch);
-            }else if(firstOldMatch >= 0){
+            } else if (firstOldMatch >= 0) {
                 ret = connectedArray.get(firstOldMatch);
                 // we move this to last position
                 connectedArray.remove(firstOldMatch);
@@ -660,16 +660,17 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
 
             //priintOnScreen("EEE", "firstNewMatch " + firstNewMatch + ", firstOldMatch: " + firstOldMatch);
 
-        }else if(available.size() > 0){
+        } else if (available.size() > 0) {
             ret = available.get(0);
         }
-        if(ret != null){
+
+        if (ret != null) {
             connectedArray.add(ret);
 
             // just to set upper limit for the amount of remembered contacts
             // when we have 101, we remove the oldest (that's the top one)
             // from the array
-            if(connectedArray.size() > 100){
+            if (connectedArray.size() > appSettings.maximumConnectedBeforeRemoval) {
                 connectedArray.remove(0);
             }
         }
@@ -677,5 +678,3 @@ public class MainActivity extends AppCompatActivity implements BTConnector.Callb
         return ret;
     }
 }
-
-

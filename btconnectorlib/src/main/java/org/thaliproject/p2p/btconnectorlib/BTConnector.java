@@ -150,15 +150,16 @@ public class BTConnector implements BluetoothBase.BluetoothStatusChanged, WifiBa
             myBluetoothMACAddress =  android.provider.Settings.Secure.getString(context.getContentResolver(), "bluetooth_address");
         }
         Log.i("BTConnector", "I am sending my Bluetooth MAC Address as: " + myBluetoothMACAddress);
+        LogKeeper.addLogEntry("BTC", "This device Bluetooth MAC Address " + myBluetoothMACAddress, LogKeeper.L_A_SHOW_A, LogKeeper.L_B_NORMAL);
 
         String advertLine = "";
 
 // ToDo: add RNG seeding fix for Android
         if (mBluetoothBase != null) {
-            if(mAESCrypt != null){
+            if (mAESCrypt != null) {
                 try {
                     advertLine = mAESCrypt.encrypt(myBluetoothMACAddress);
-                }catch (Exception e){
+                } catch (Exception e) {
                     print_line("", "mAESCrypt.encrypt failed: " + e.toString());
                 }
             }

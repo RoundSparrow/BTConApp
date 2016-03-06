@@ -29,6 +29,8 @@ public class ApplicationSettings {
 	//todo remove after tests
 	final String serviceTypeIdentifier = "_HUMPPAA._tcp";
 
+	public int maximumConnectedBeforeRemoval = 100;
+
 
 	public void setBluetoothDataSizeIndexTo(int zeroToFour)
 	{
